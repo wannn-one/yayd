@@ -38,7 +38,7 @@ $result_history = mysqli_stmt_get_result($stmt_history);
                         <a href="<?= BASE_URL ?>/kegiatan_detail.php?id=<?= $kegiatan['id_kegiatan'] ?>" class="details-link">Lihat Detail &rarr;</a>
                     </div>
                     <div class="event-image">
-                        <img src="<?= !empty($kegiatan['dokumentasi']) ? $kegiatan['dokumentasi'] : 'https://placehold.co/600x400/png'; ?>" alt="Gambar Kegiatan">
+                        <img src="<?= !empty($kegiatan['dokumentasi']) ? (filter_var($kegiatan['dokumentasi'], FILTER_VALIDATE_URL) ? $kegiatan['dokumentasi'] : BASE_URL . '/' . $kegiatan['dokumentasi']) : 'https://placehold.co/600x400/png'; ?>" alt="Gambar Kegiatan">
                     </div>
                 </div>
                 <?php endwhile; ?>
@@ -61,7 +61,7 @@ $result_history = mysqli_stmt_get_result($stmt_history);
                         <a href="<?= BASE_URL ?>/kegiatan_detail.php?id=<?= $kegiatan['id_kegiatan'] ?>" class="details-link">Lihat Detail &rarr;</a>
                     </div>
                     <div class="event-image">
-                        <img src="<?= !empty($kegiatan['dokumentasi']) ? $kegiatan['dokumentasi'] : 'https://placehold.co/600x400/png'; ?>" alt="Gambar Kegiatan">
+                        <img src="<?= !empty($kegiatan['dokumentasi']) ? (filter_var($kegiatan['dokumentasi'], FILTER_VALIDATE_URL) ? $kegiatan['dokumentasi'] : BASE_URL . '/' . $kegiatan['dokumentasi']) : 'https://placehold.co/600x400/png'; ?>" alt="Gambar Kegiatan">
                     </div>
                 </div>
                 <?php endwhile; ?>

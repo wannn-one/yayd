@@ -1,7 +1,7 @@
 body, html {
     margin: 0;
     padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Plus Jakarta Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #fdfdff;
     color: #333;
     height: 100%;
@@ -99,19 +99,158 @@ nav ul li a {
 }
 .btn-secondary:hover { background-color: #e2e6ea; }
 
+
+.burger-menu {
+    display: none;
+    flex-direction: column;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    z-index: 1001;
+}
+
+.burger-menu span {
+    width: 25px;
+    height: 3px;
+    background-color: #333;
+    margin: 3px 0;
+    transition: 0.3s;
+    border-radius: 2px;
+}
+
+.burger-menu.active span:nth-child(1) {
+    transform: rotate(-45deg) translate(-5px, 6px);
+}
+
+.burger-menu.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.burger-menu.active span:nth-child(3) {
+    transform: rotate(45deg) translate(-5px, -6px);
+}
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+}
+
+.nav-menu ul {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
 .btn-info { background-color: #17a2b8; color: white; }
-.hero {
-    background-image: url('../images/hero-background.jpg');
-    background-size: cover;
-    background-position: center;
-    color: white;
-    padding: 60px 0;
-    text-align: center;
+
+
+.hero-carousel {
+    position: relative;
+    height: 600px;
+    overflow: hidden;
     flex-shrink: 0;
 }
-.hero h1 { font-size: 48px; margin-bottom: 20px; }
-.hero p { font-size: 20px; margin-bottom: 30px; }
-.hero .btn { margin: 0 10px; }
+
+.hero-slides {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.hero-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: white;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    opacity: 0;
+    transform: scale(1.05);
+    transition: opacity 2s ease-in-out, transform 2s ease-in-out;
+}
+
+.hero-slide.active {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Loading animation for carousel */
+.hero-carousel::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-top: 3px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    z-index: 3;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.hero-carousel.loading::after {
+    opacity: 1;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Background images will be set dynamically via JavaScript */
+
+/* Overlay for better text readability */
+.hero-slide::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+}
+
+.hero-slide .container {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-slide h1 { 
+    font-size: 48px; 
+    margin-bottom: 20px;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.hero-slide p { 
+    font-size: 20px; 
+    margin-bottom: 30px;
+    font-weight: 400;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hero-slide .btn { 
+    margin: 0 10px;
+    font-size: 16px;
+    padding: 12px 24px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
 .section {
     padding: 40px 0;
 }
@@ -159,20 +298,16 @@ footer {
     flex-shrink: 0;
 }
 
-/*
-=================================
-STYLING UNTUK FORMULIR
-=================================
-*/
 
-/* Kontainer utama untuk form */
+
+
 .form-container {
     background: #ffffff;
     padding: 30px 50px;
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     max-width: 500px;
-    margin: 0 auto; /* Center horizontal */
+    margin: 0 auto;
     width: 90%;
 }
 
@@ -188,7 +323,7 @@ STYLING UNTUK FORMULIR
     color: #666;
 }
 
-/* Grup untuk setiap label dan input */
+
 .form-group {
     margin-bottom: 20px;
 }
@@ -201,12 +336,12 @@ STYLING UNTUK FORMULIR
     color: #555;
 }
 
-/* Styling untuk semua input field dan select box */
+
 .form-group input[type="text"],
 .form-group input[type="email"],
 .form-group input[type="password"],
 .form-group select,
-.form-group textarea { /* <-- TAMBAHKAN INI */
+.form-group textarea {
     width: 100%;
     padding: 12px;
     border: 1px solid #ccc;
@@ -214,10 +349,10 @@ STYLING UNTUK FORMULIR
     box-sizing: border-box; 
     font-size: 16px;
     transition: border-color 0.3s, box-shadow 0.3s;
-    font-family: inherit; /* Tambahkan ini agar font-nya sama */
+    font-family: inherit;
 }
 
-/* Efek saat input di-klik (focus) */
+
 .form-group input:focus,
 .form-group select:focus {
     outline: none;
@@ -225,12 +360,12 @@ STYLING UNTUK FORMULIR
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
 }
 
-/* Tombol di dalam form */
+
 .form-group .btn {
     width: 100%;
     padding: 12px;
     font-size: 16px;
-    background-color: #007bff; /* Menggunakan warna primary button */
+    background-color: #007bff;
 }
 
 /* Link di bawah form (misal: "Sudah punya akun?") */
@@ -275,17 +410,26 @@ STYLING UNTUK FORMULIR
     text-align: center; 
 }
 
-/*
-=================================
-STYLING UNTUK HALAMAN PILIHAN PERAN
-=================================
-*/
+
 
 .role-selection-container {
-    max-width: 1000px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
     width: 100%;
+}
+
+/* Large desktop screens */
+@media (min-width: 1200px) {
+    .role-cards {
+        gap: 50px;
+        max-width: 1000px;
+        margin: 0 auto 40px auto;
+    }
+    
+    .role-card {
+        max-width: 420px;
+    }
 }
 
 .role-selection-header {
@@ -312,6 +456,7 @@ STYLING UNTUK HALAMAN PILIHAN PERAN
     justify-content: center;
     margin-bottom: 40px;
     align-items: stretch;
+    padding: 0 20px;
 }
 
 .role-card {
@@ -319,7 +464,7 @@ STYLING UNTUK HALAMAN PILIHAN PERAN
     border-radius: 12px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     padding: 30px;
-    width: 100%;
+    flex: 1;
     max-width: 450px;
     text-align: center;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -475,15 +620,123 @@ STYLING UNTUK HALAMAN PILIHAN PERAN
     text-decoration: underline;
 }
 
-/* Responsive Design */
+/* Large tablet and small desktop styles */
+@media (max-width: 1024px) and (min-width: 992px) {
+    .role-cards {
+        gap: 35px;
+        padding: 0 20px;
+    }
+    
+    .role-card {
+        max-width: 420px;
+        padding: 28px;
+    }
+}
+
+/* Tablet styles */
+@media (max-width: 991px) and (min-width: 769px) {
+    .role-cards {
+        gap: 30px;
+        padding: 0 15px;
+    }
+    
+    .role-card {
+        max-width: 400px;
+        padding: 25px;
+    }
+    
+    .role-card h3 {
+        font-size: 22px;
+    }
+    
+    .role-description {
+        font-size: 15px;
+    }
+    
+    .role-selection-container {
+        padding: 0 20px;
+    }
+    
+    .role-selection-footer {
+        padding: 25px;
+        margin-top: 35px;
+    }
+}
+
+/* Mobile styles */
 @media (max-width: 768px) {
+    /* Header & Navigation */
+    .burger-menu {
+        display: flex;
+    }
+    
+    .nav-menu {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 280px;
+        height: 100vh;
+        background-color: #fff;
+        box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+        transition: right 0.3s ease;
+        z-index: 1000;
+        padding-top: 80px;
+    }
+    
+    .nav-menu.active {
+        right: 0;
+    }
+    
+    .nav-menu ul {
+        flex-direction: column;
+        width: 100%;
+        padding: 0 20px;
+        gap: 0;
+    }
+    
+    .nav-menu ul li {
+        margin: 0;
+        margin-bottom: 20px;
+        width: 100%;
+    }
+    
+    .nav-menu ul li a {
+        display: block;
+        padding: 15px 0;
+        border-bottom: 1px solid #f0f0f0;
+        width: 100%;
+    }
+    
+    .nav-menu ul li a.btn {
+        text-align: center;
+        border-bottom: none;
+        border-radius: 5px;
+        margin: 5px 0;
+    }
+    
+    /* Logo responsive */
+    .logo img {
+        width: 30% !important;
+    }
+    
+    /* Other existing responsive styles */
     .role-cards {
         flex-direction: column;
         gap: 30px;
+        padding: 0 10px;
     }
     
     .role-card {
         max-width: 100%;
+        padding: 25px;
+    }
+    
+    .role-selection-container {
+        padding: 0 15px;
+    }
+    
+    .role-selection-header {
+        margin-bottom: 30px;
     }
     
     .role-selection-header h2 {
@@ -494,12 +747,55 @@ STYLING UNTUK HALAMAN PILIHAN PERAN
         font-size: 16px;
     }
     
-    .hero h1 {
+    .role-selection-footer {
+        padding: 25px 20px;
+        margin-top: 30px;
+    }
+    
+    .both-roles {
+        margin-bottom: 20px;
+    }
+    
+    .both-roles h4 {
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
+    
+    .both-roles p {
+        font-size: 13px;
+    }
+    
+    .back-to-login p {
+        font-size: 13px;
+    }
+    
+    /* Hero Carousel Mobile */
+    .hero-carousel {
+        height: 500px;
+    }
+    
+    .hero-slide {
+        background-attachment: scroll; /* Fix for mobile */
+    }
+    
+    .hero-slide h1 {
         font-size: 32px;
     }
     
-    .hero p {
+    .hero-slide p {
         font-size: 16px;
+        padding: 0 20px;
+    }
+    
+    .hero-slide .btn {
+        font-size: 14px;
+        padding: 10px 20px;
+        margin: 5px;
+        display: block;
+        max-width: 200px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 10px;
     }
     
     .form-container {
@@ -509,6 +805,638 @@ STYLING UNTUK HALAMAN PILIHAN PERAN
     
     .main-content {
         padding: 10px 0;
+    }
+    
+    .activities-grid {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .card {
+        width: 100%;
+    }
+}
+
+/* Additional mobile styles for smaller screens */
+@media (max-width: 480px) {
+    .container {
+        width: 95%;
+    }
+    
+    .logo img {
+        width: 40% !important;
+    }
+    
+    .nav-menu {
+        width: 100%;
+        right: -100%;
+    }
+    
+    /* Hero Carousel Small Mobile */
+    .hero-carousel {
+        height: 450px;
+    }
+    
+    .hero-slide h1 {
+        font-size: 28px;
+        margin-bottom: 15px;
+    }
+    
+    .hero-slide p {
+        font-size: 14px;
+        padding: 0 15px;
+        margin-bottom: 25px;
+    }
+    
+    .hero-slide .btn {
+        font-size: 13px;
+        padding: 8px 16px;
+        margin: 3px;
+    }
+    
+    /* Role cards extra small screens */
+    .role-cards {
+        padding: 0 5px;
+        gap: 20px;
+    }
+    
+    .role-card {
+        padding: 20px;
+        border-radius: 8px;
+    }
+    
+    .role-card h3 {
+        font-size: 20px;
+        margin-bottom: 12px;
+    }
+    
+    .role-description {
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+    
+    .role-benefits {
+        margin-bottom: 20px;
+    }
+    
+    .role-benefits h4 {
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+    
+    .role-benefits ul li {
+        font-size: 13px;
+        margin-bottom: 6px;
+    }
+    
+    .role-commitment {
+        font-size: 13px;
+        margin-bottom: 20px;
+    }
+    
+    .role-btn {
+        padding: 12px 20px;
+        font-size: 14px;
+    }
+    
+    .role-selection-container {
+        padding: 0 10px;
+    }
+    
+    .role-selection-header {
+        margin-bottom: 25px;
+    }
+    
+    .role-selection-header h2 {
+        font-size: 22px;
+        margin-bottom: 10px;
+    }
+    
+    .role-selection-header p {
+        font-size: 14px;
+    }
+    
+    .role-selection-footer {
+        padding: 20px 15px;
+        margin-top: 25px;
+        border-radius: 8px;
+    }
+    
+    .both-roles {
+        margin-bottom: 15px;
+    }
+    
+    .both-roles h4 {
+        font-size: 14px;
+        margin-bottom: 6px;
+    }
+    
+    .both-roles p {
+        font-size: 12px;
+    }
+    
+    .back-to-login {
+        padding-top: 15px;
+    }
+    
+    .back-to-login p {
+        font-size: 12px;
+    }
+    
+    /* Admin Mobile Responsive Styles */
+    .admin-toggle {
+        display: flex !important;
+        position: fixed !important;
+        top: 20px !important;
+        left: 20px !important;
+        z-index: 9999 !important;
+        padding: 12px !important;
+        background: #007bff !important;
+        border: none !important;
+        border-radius: 6px !important;
+        cursor: pointer !important;
+        width: 44px !important;
+        height: 44px !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    .admin-toggle .toggle-icon {
+        color: white !important;
+        font-size: 18px !important;
+        font-weight: bold !important;
+        line-height: 1 !important;
+        display: block !important;
+    }
+    
+    .admin-sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1001;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    
+    .admin-sidebar-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .admin-sidebar {
+        transform: translateX(-100%);
+        box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        left: 0;
+    }
+    
+    .admin-sidebar.active {
+        transform: translateX(0);
+    }
+    
+    .sidebar-close {
+        display: block;
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: none;
+        border: none;
+        font-size: 24px;
+        color: #666;
+        cursor: pointer;
+        padding: 5px;
+        line-height: 1;
+    }
+    
+    .admin-main-content {
+        margin-left: 0 !important;
+        padding: 80px 20px 20px 20px !important;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+    
+    .admin-main-content h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+    
+    .admin-main-content h2 {
+        font-size: 22px;
+        margin-bottom: 15px;
+    }
+    
+    .admin-main-content h3 {
+        font-size: 18px;
+        margin: 20px 0 15px 0;
+    }
+    
+    .admin-main-content p {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+    
+    /* Admin Tables Responsive */
+    .table-data {
+        font-size: 12px;
+    }
+    
+    .table-data th,
+    .table-data td {
+        padding: 8px 4px;
+    }
+    
+    /* Admin Forms Responsive */
+    .admin-main-content .form-container {
+        padding: 15px;
+        margin: 0;
+    }
+    
+    .form-container-lg {
+        padding: 15px !important;
+        margin: 0 !important;
+    }
+    
+    /* Button Groups */
+    .btn {
+        padding: 8px 12px;
+        font-size: 12px;
+        margin: 2px;
+    }
+    
+    /* Chart Container */
+    .chart-container {
+        padding: 15px;
+    }
+    
+    /* Summary Cards Mobile */
+    .summary-cards {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .summary-card {
+        padding: 15px;
+        text-align: center;
+    }
+    
+    .summary-card h4 {
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+    
+    .summary-card p {
+        font-size: 18px;
+    }
+    
+    /* Table responsive wrapper */
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    
+    .table-data {
+        font-size: 11px;
+        min-width: 600px;
+    }
+    
+    .table-data th,
+    .table-data td {
+        padding: 6px 4px;
+        white-space: nowrap;
+    }
+    
+    .table-data td:nth-child(2) {
+        max-width: 150px;
+        white-space: normal;
+        word-wrap: break-word;
+    }
+    
+    /* Pagination mobile */
+    .pagination {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 5px;
+        margin: 15px 0;
+    }
+    
+    .pagination a {
+        padding: 6px 10px;
+        font-size: 12px;
+        min-width: 32px;
+        text-align: center;
+    }
+    
+    /* Download button mobile */
+    .download-section {
+        text-align: center;
+        margin-top: 20px;
+    }
+    
+    .download-section .btn {
+        width: 100%;
+        max-width: 280px;
+        padding: 12px;
+        font-size: 14px;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+    .admin-main-content {
+        padding: 80px 10px 10px 10px !important;
+    }
+    
+    .admin-main-content h2 {
+        font-size: 20px;
+        margin-bottom: 12px;
+    }
+    
+    .admin-main-content h3 {
+        font-size: 16px;
+        margin: 15px 0 10px 0;
+    }
+    
+    .admin-main-content p {
+        font-size: 12px;
+        line-height: 1.4;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .stat-card {
+        padding: 15px;
+    }
+    
+    .stat-card p {
+        font-size: 20px;
+    }
+    
+    .admin-toggle {
+        display: flex !important;
+        position: fixed !important;
+        top: 15px !important;
+        left: 15px !important;
+        padding: 10px !important;
+        background: #007bff !important;
+        border: none !important;
+        border-radius: 6px !important;
+        cursor: pointer !important;
+        z-index: 9999 !important;
+        width: 40px !important;
+        height: 40px !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    .admin-toggle .toggle-icon {
+        color: white !important;
+        font-size: 16px !important;
+        font-weight: bold !important;
+        line-height: 1 !important;
+        display: block !important;
+    }
+    
+    /* Tables on very small screens - make scrollable */
+    .table-data {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+        font-size: 10px;
+    }
+    
+    .table-data th,
+    .table-data td {
+        padding: 6px 3px;
+    }
+    
+    /* Summary Cards Extra Small */
+    .summary-cards {
+        gap: 10px;
+    }
+    
+    .summary-card {
+        padding: 12px;
+    }
+    
+    .summary-card h4 {
+        font-size: 12px;
+        margin-bottom: 6px;
+    }
+    
+    .summary-card p {
+        font-size: 16px;
+    }
+    
+    /* Table extra responsive */
+    .table-data {
+        font-size: 9px;
+        min-width: 500px;
+    }
+    
+    .table-data th,
+    .table-data td {
+        padding: 4px 2px;
+    }
+    
+    .table-data td:nth-child(2) {
+        max-width: 120px;
+    }
+    
+    /* Action buttons in table */
+    .table-data .btn-sm {
+        padding: 3px 8px;
+        font-size: 10px;
+        margin: 2px 1px;
+        display: inline-block;
+    }
+    
+    .table-data select {
+        font-size: 10px;
+        padding: 3px;
+        margin: 2px 0;
+        max-width: 80px;
+    }
+    
+    /* Status chip in mobile */
+    .table-data .status-chip {
+        padding: 3px 8px;
+        font-size: 9px;
+        border-radius: 10px;
+    }
+    
+    /* Kelola pengguna specific mobile styling */
+    body[data-page="kelola_pengguna"] .table-data {
+        min-width: 700px;
+    }
+    
+    body[data-page="kelola_pengguna"] .table-data td:nth-child(5) {
+        min-width: 120px;
+    }
+    
+    /* Stack buttons vertically in mobile for better readability */
+    @media (max-width: 480px) {
+        body[data-page="kelola_pengguna"] .table-data td:nth-child(5) .btn-sm {
+            display: block;
+            margin: 2px 0;
+            font-size: 9px;
+            padding: 4px 8px;
+        }
+        
+        body[data-page="kelola_pengguna"] .table-data td:nth-child(5) select {
+            display: block;
+            width: 100%;
+            margin: 2px 0;
+            font-size: 9px;
+        }
+        
+        body[data-page="kelola_pengguna"] .table-data td:nth-child(5) form {
+            margin: 2px 0;
+        }
+    }
+    
+    /* Pagination extra small */
+    .pagination a {
+        padding: 4px 8px;
+        font-size: 11px;
+        min-width: 28px;
+    }
+    
+    /* Download button extra small */
+    .download-section .btn {
+        padding: 10px;
+        font-size: 12px;
+    }
+    
+    /* Alternative table layout for very small screens */
+    @media (max-width: 375px) {
+        .table-container {
+            border: none;
+        }
+        
+        .table-data,
+        .table-data thead,
+        .table-data tbody,
+        .table-data th,
+        .table-data td,
+        .table-data tr {
+            display: block;
+        }
+        
+        .table-data thead {
+            display: none;
+        }
+        
+        .table-data tr {
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            background: #fff;
+        }
+        
+        .table-data td {
+            border: none;
+            position: relative;
+            padding: 8px 0 8px 40%;
+            text-align: left;
+            white-space: normal;
+            font-size: 12px;
+        }
+        
+        .table-data td:before {
+            content: attr(data-label);
+            position: absolute;
+            left: 0;
+            width: 35%;
+            padding-right: 10px;
+            white-space: nowrap;
+            font-weight: bold;
+            color: #666;
+        }
+        
+        /* Labels for financial report table */
+        .table-data td:nth-child(1):before { content: "Tanggal: "; }
+        .table-data td:nth-child(2):before { content: "Deskripsi: "; }
+        .table-data td:nth-child(3):before { content: "Pemasukan: "; }
+        .table-data td:nth-child(4):before { content: "Pengeluaran: "; }
+        
+        /* Universal table labels for different admin pages */
+        
+        /* User Management table (5 columns) */
+        body[data-page="kelola_pengguna"] .table-data td:nth-child(1):before { content: "Nama: "; }
+        body[data-page="kelola_pengguna"] .table-data td:nth-child(2):before { content: "Email: "; }
+        body[data-page="kelola_pengguna"] .table-data td:nth-child(3):before { content: "Peran: "; }
+        body[data-page="kelola_pengguna"] .table-data td:nth-child(4):before { content: "Status: "; }
+        body[data-page="kelola_pengguna"] .table-data td:nth-child(5):before { content: "Aksi: "; }
+        
+        /* Donation Management table */
+        body[data-page="kelola_donasi"] .table-data td:nth-child(1):before { content: "Tanggal: "; }
+        body[data-page="kelola_donasi"] .table-data td:nth-child(2):before { content: "Donatur: "; }
+        body[data-page="kelola_donasi"] .table-data td:nth-child(3):before { content: "Jenis: "; }
+        body[data-page="kelola_donasi"] .table-data td:nth-child(4):before { content: "Jumlah: "; }
+        body[data-page="kelola_donasi"] .table-data td:nth-child(5):before { content: "Status: "; }
+        body[data-page="kelola_donasi"] .table-data td:nth-child(6):before { content: "Aksi: "; }
+        
+        /* Distribution Management table */
+        body[data-page="kelola_distribusi"] .table-data td:nth-child(1):before { content: "Tanggal: "; }
+        body[data-page="kelola_distribusi"] .table-data td:nth-child(2):before { content: "Deskripsi: "; }
+        body[data-page="kelola_distribusi"] .table-data td:nth-child(3):before { content: "Nominal: "; }
+        body[data-page="kelola_distribusi"] .table-data td:nth-child(4):before { content: "Aksi: "; }
+        
+        /* Activity Management table */
+        body[data-page="kelola_kegiatan"] .table-data td:nth-child(1):before { content: "Nama: "; }
+        body[data-page="kelola_kegiatan"] .table-data td:nth-child(2):before { content: "Tanggal: "; }
+        body[data-page="kelola_kegiatan"] .table-data td:nth-child(3):before { content: "Lokasi: "; }
+        body[data-page="kelola_kegiatan"] .table-data td:nth-child(4):before { content: "Status: "; }
+        body[data-page="kelola_kegiatan"] .table-data td:nth-child(5):before { content: "Aksi: "; }
+        
+        /* Volunteer History table */
+        body[data-page="histori_relawan"] .table-data td:nth-child(1):before { content: "Kegiatan: "; }
+        body[data-page="histori_relawan"] .table-data td:nth-child(2):before { content: "Tanggal: "; }
+        body[data-page="histori_relawan"] .table-data td:nth-child(3):before { content: "Status: "; }
+        
+        /* Attendance table */
+        body[data-page="absensi_kegiatan"] .table-data td:nth-child(1):before { content: "Relawan: "; }
+        body[data-page="absensi_kegiatan"] .table-data td:nth-child(2):before { content: "Status: "; }
+        body[data-page="absensi_kegiatan"] .table-data td:nth-child(3):before { content: "Waktu: "; }
+        
+        /* Special styling for action column in card view */
+        body[data-page="kelola_pengguna"] .table-data td:nth-child(5) {
+            padding: 10px 0 10px 40%;
+        }
+        
+        body[data-page="kelola_pengguna"] .table-data td:nth-child(5) .btn-sm {
+            display: block;
+            margin: 3px 0;
+            font-size: 11px;
+            padding: 6px 12px;
+            text-align: center;
+        }
+        
+        body[data-page="kelola_pengguna"] .table-data td:nth-child(5) select {
+            width: 100%;
+            margin: 3px 0;
+            padding: 4px;
+            font-size: 11px;
+        }
     }
 }
 
@@ -658,6 +1586,8 @@ STYLING UNTUK ADMIN DASHBOARD
     position: fixed;
     border-right: 1px solid #e7e7e7;
     height: 100%; /* Kita gunakan 100% agar mengikuti tinggi wrapper */
+    transition: transform 0.3s ease;
+    z-index: 1002;
 }
 
 .sidebar-header {
@@ -694,6 +1624,52 @@ STYLING UNTUK ADMIN DASHBOARD
     margin-right: 10px;
     width: 20px;
     text-align: center;
+}
+
+/* Admin Toggle Button - Desktop styles */
+.admin-toggle {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: #007bff;
+    border: none;
+    border-radius: 4px;
+    padding: 8px;
+    cursor: pointer;
+    z-index: 1003;
+    transition: left 0.3s ease;
+}
+
+.admin-toggle .toggle-icon {
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1;
+    transition: transform 0.3s ease;
+}
+
+/* Desktop collapsed state */
+.admin-sidebar.collapsed {
+    transform: translateX(-100%);
+}
+
+.admin-main-content.expanded {
+    margin-left: 0;
+}
+
+.admin-toggle.active {
+    left: 20px;
+}
+
+/* Hide overlay and close button on desktop */
+.admin-sidebar-overlay {
+    display: none;
+}
+
+.sidebar-close {
+    display: none;
 }
 
 .admin-main-content {
@@ -929,4 +1905,152 @@ STYLING UNTUK HALAMAN DETAIL KEGIATAN
 
 .detail-info p {
     line-height: 1.8;
+}
+
+/*
+=================================
+STYLING TAMBAHAN UNTUK TABEL MANAJEMEN PENGGUNA
+=================================
+*/
+
+/* Chip Warna untuk Status Akun */
+.status-chip.status-aktif {
+    background-color: #d4edda; /* Hijau muda */
+    color: #155724; /* Hijau tua */
+}
+
+.status-chip.status-pending {
+    background-color: #fff3cd; /* Kuning muda */
+    color: #856404; /* Kuning tua */
+}
+
+.status-chip.status-diblokir {
+    background-color: #f8d7da; /* Merah muda */
+    color: #721c24; /* Merah tua */
+}
+
+/* Styling Dropdown di dalam Tabel Aksi */
+.table-data td select {
+    /* Menghapus tampilan default browser */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    
+    /* Menyesuaikan tampilan agar mirip tombol */
+    background-color: #457bab; /* Warna abu-abu seperti tombol 'Edit' */
+    color: white;
+    padding: 5px 25px 5px 10px; /* Padding kanan lebih besar untuk ruang panah */
+    font-size: 12px;
+    border: none;
+    border-radius: 0.2rem;
+    cursor: pointer;
+    
+    /* Menambahkan ikon panah dropdown kustom menggunakan SVG */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    background-size: 16px 12px;
+}
+
+.table-data td select:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+    cursor: pointer;
+}
+
+/* Styling untuk Pagination */
+.pagination {
+    margin-top: 20px;
+}
+.pagination a {
+    color: #007bff;
+    padding: 8px 16px;
+    text-decoration: none;
+    border: 1px solid #ddd;
+    margin: 0 4px;
+    border-radius: 4px;
+}
+.pagination a.active {
+    background-color: #007bff;
+    color: white;
+    border: 1px solid #007bff;
+}
+.pagination a:hover:not(.active) {
+    background-color: #f4f4f4;
+}
+
+/* Styling untuk Kartu Rekapitulasi Laporan */
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+.summary-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border: 1px solid #eee;
+}
+.summary-card h4 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    color: #666;
+}
+.summary-card p {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+.summary-card.saldo p {
+    color: #007bff;
+}
+
+/* Table Container */
+.table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin: 20px 0;
+}
+
+/* Download Section */
+.download-section {
+    text-align: right;
+    margin-top: 20px;
+}
+
+/* Page Header */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.page-header h2 {
+    margin: 0;
+    flex: 1;
+}
+
+@media (max-width: 768px) {
+    .download-section {
+        text-align: center;
+    }
+    
+    .page-header {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
+    
+    .page-header .btn {
+        width: 100%;
+        max-width: 280px;
+        margin: 0 auto;
+    }
 }

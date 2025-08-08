@@ -2,8 +2,7 @@
 require_once realpath(__DIR__ . '/../../config/database.php');
 require_once realpath(__DIR__ . '/../templates/header.php');
 
-// Ambil daftar peran dari database untuk dropdown
-$roles = mysqli_query($koneksi, "SELECT * FROM roles");
+$roles = mysqli_query($koneksi, "SELECT * FROM roles ORDER BY nama_role");
 ?>
 
 <div class="admin-wrapper">

@@ -1,8 +1,8 @@
-# YAYD - Yayasan Anak Yatim Damai
+# YAYD - Yho Akhirat Yho Dunyo
 
 ## Tentang Aplikasi
 
-YAYD (Yayasan Anak Yatim Damai) adalah platform komunitas berbasis web yang komprehensif untuk mendukung anak-anak yatim melalui kegiatan sosial yang terorganisir dan pengelolaan donasi yang transparan. Platform ini berfungsi sebagai jembatan antara donatur, relawan, dan yayasan untuk menciptakan dampak nyata dalam kehidupan anak-anak yatim.
+YAYD (Yho Akhirat Yho Dunyo) adalah platform komunitas berbasis web yang komprehensif untuk mendukung anak-anak yatim melalui kegiatan sosial yang terorganisir dan pengelolaan donasi yang transparan. Platform ini berfungsi sebagai jembatan antara donatur, relawan, dan yayasan untuk menciptakan dampak nyata dalam kehidupan anak-anak yatim.
 
 **Visi:** Menjadi lembaga yang amanah dalam memberdayakan anak yatim.
 
@@ -46,6 +46,20 @@ YAYD (Yayasan Anak Yatim Damai) adalah platform komunitas berbasis web yang komp
 - **Kegiatan Mendatang**: Showcaset acara komunitas yang direncanakan
 - **Registrasi Mudah**: Pemilihan peran dan proses registrasi sederhana
 
+## Fitur Versi 2.0
+
+### 💰 Pengelolaan Donasi
+- **Distribusi Donasi**: Admin dapat mencatat semua pengeluaran/penyaluran donasi untuk transparansi penuh.
+- **Laporan Keuangan Excel**: Laporan keuangan lengkap (pemasukan & pengeluaran) yang dapat diunduh dalam format .xlsx.
+
+### 📅 Manajemen Konten & Kegiatan
+- **Kelola Konten Terpusat**: Admin dapat mengelola semua konten dari satu menu, termasuk:
+   - **Profil Yayasan**: Mengubah Visi, Misi, dan info kontak yang tampil di halaman publik.
+
+### 👥 Pengelolaan Pengguna
+- **Approval Pendaftaran Relawan**: Setiap relawan baru harus disetujui oleh Admin sebelum akunnya aktif dan bisa login.
+- **Absensi Digital**: Admin dapat mencatat kehadiran relawan (Hadir, Batal) pada setiap kegiatan.
+
 ## Cara Setup
 
 ### Persyaratan
@@ -88,6 +102,18 @@ git clone [repository-url] yayd
 2. Ekstrak file ke folder `libs/fpdf186/` di dalam project
 3. Struktur yang benar: `yayd/libs/fpdf186/fpdf.php`
 
+#### 5. Install Depedencies dengan Composer
+1. Buka Command Prompt (CMD) atau Terminal.
+2. Navigasi ke direktori project:
+   ```bash
+   cd C:\xampp\htdocs\yayd
+   ```
+3. Jalankan perintah berikut untuk menginstal dependensi:
+   ```bash
+   composer install
+   ```
+4. Jika ada error, pastikan Anda memiliki Composer terinstal.
+
 #### 5. Konfigurasi Koneksi Database
 1. Buka file `config/config.php`
 2. Perbarui kredensial database sesuai dengan setup MySQL Workbench Anda:
@@ -112,6 +138,11 @@ Setelah menjalankan script database, Anda dapat menggunakan role default berikut
 - **Admin** (ID: 1)
 - **Donatur** (ID: 2)
 - **Relawan** (ID: 3)
+
+### Akun Tes
+- **Admin**: admin@example.com / 123123
+- **Donatur**: donatur.ahmad@example.com / 123123
+- **Relawan**: relawan.kevin@example.com / 123123
 
 ### Struktur File
 ```

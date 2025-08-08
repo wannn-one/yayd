@@ -1,9 +1,5 @@
--- --------------------------------------------------------
--- Skrip untuk Proyek Website Komunitas YAYD
--- --------------------------------------------------------
-
--- 1. Pembuatan Schema (Database)
-CREATE SCHEMA `yayd` ;
+-- 1. Pembuatan Schema
+CREATE SCHEMA IF NOT EXISTS `yayd` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `yayd`;
 
 -- --------------------------------------------------------
@@ -17,6 +13,7 @@ CREATE TABLE `roles` (
 CREATE TABLE `users` (
   `id_user` INT AUTO_INCREMENT PRIMARY KEY,
   `id_role_fk` INT NOT NULL,
+  `status_akun` ENUM('Aktif', 'Pending', 'Diblokir') NOT NULL DEFAULT 'Pending' COMMENT 'Status persetujuan akun oleh admin',
   `nama_lengkap` VARCHAR(255) NOT NULL,
   `email` VARCHAR(255) NOT NULL UNIQUE,
   `password` VARCHAR(255) NOT NULL COMMENT 'Password harus disimpan dalam bentuk hash',
@@ -47,6 +44,7 @@ CREATE TABLE `donasi` (
   `deskripsi_barang` TEXT NULL,
   `metode` ENUM('Transfer', 'COD', 'OTS') NOT NULL,
   `status` ENUM('Pending', 'Diterima', 'Ditolak') NOT NULL DEFAULT 'Pending',
+  `status_distribusi` ENUM('Tersedia', 'Tersalurkan') NOT NULL DEFAULT 'Tersedia' COMMENT 'Status penyaluran dana/barang',
   `bukti_pembayaran` VARCHAR(255) NULL,
   `tanggal_donasi` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
@@ -58,6 +56,19 @@ CREATE TABLE `partisipasi_kegiatan` (
   `tanggal_pendaftaran` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `status_kehadiran` ENUM('Terdaftar', 'Hadir', 'Batal') NOT NULL DEFAULT 'Terdaftar',
   CONSTRAINT `unique_user_per_kegiatan` UNIQUE (`id_user_relawan_fk`, `id_kegiatan_fk`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `distribusi_donasi` (
+  `id_distribusi` INT AUTO_INCREMENT PRIMARY KEY,
+  `id_kegiatan_fk` INT NULL,
+  `tanggal_distribusi` DATETIME NOT NULL,
+  `penerima` VARCHAR(255) NOT NULL COMMENT 'Siapa/lembaga apa yang menerima',
+  `deskripsi` TEXT NOT NULL COMMENT 'Detail penyaluran',
+  `nominal` DECIMAL(15, 2) NULL COMMENT 'Jumlah uang yang disalurkan',
+  `item_barang` VARCHAR(255) NULL COMMENT 'Barang yang disalurkan',
+  `dokumentasi` VARCHAR(255) NULL COMMENT 'Path ke foto bukti penyaluran',
+  `dicatat_oleh` INT NOT NULL COMMENT 'ID Admin yang mencatat',
+  `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
 CREATE TABLE `profil_yayd` (
@@ -85,6 +96,10 @@ ALTER TABLE `partisipasi_kegiatan`
   ADD CONSTRAINT `fk_partisipasi_users` FOREIGN KEY (`id_user_relawan_fk`) REFERENCES `users`(`id_user`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_partisipasi_kegiatan` FOREIGN KEY (`id_kegiatan_fk`) REFERENCES `kegiatan`(`id_kegiatan`) ON DELETE CASCADE ON UPDATE CASCADE;
   
+ALTER TABLE `distribusi_donasi`
+  ADD CONSTRAINT `fk_distribusi_kegiatan` FOREIGN KEY (`id_kegiatan_fk`) REFERENCES `kegiatan`(`id_kegiatan`) ON DELETE SET NULL,
+  ADD CONSTRAINT `fk_distribusi_users` FOREIGN KEY (`dicatat_oleh`) REFERENCES `users`(`id_user`) ON DELETE RESTRICT;
+
 -- --------------------------------------------------------
 
 -- 4. Pengisian Data Awal (Seeding)

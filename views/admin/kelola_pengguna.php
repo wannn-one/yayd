@@ -2,8 +2,8 @@
 require_once realpath(__DIR__ . '/../../config/database.php');
 require_once realpath(__DIR__ . '/../templates/header.php');
 
-// Query untuk mengambil semua pengguna beserta nama perannya
-$query = "SELECT u.id_user, u.nama_lengkap, u.email, r.nama_role 
+echo '<script>document.body.setAttribute("data-page", "kelola_pengguna");</script>';
+$query = "SELECT u.id_user, u.nama_lengkap, u.email, r.nama_role, u.status_akun 
           FROM users u
           JOIN roles r ON u.id_role_fk = r.id_role
           ORDER BY u.created_at DESC";
@@ -14,18 +14,20 @@ $result = mysqli_query($koneksi, $query);
     <?php require_once realpath(__DIR__ . '/../templates/admin_sidebar.php'); ?>
 
     <main class="admin-main-content">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="page-header">
             <h2>Manajemen Pengguna</h2>
             <a href="tambah_pengguna.php" class="btn btn-primary">Tambah Pengguna Baru</a>
         </div>
         <hr>
-        <table class="table-data">
+        
+        <div class="table-container">
+            <table class="table-data">
             <thead>
                 <tr>
                     <th>Nama Lengkap</th>
                     <th>Email</th>
                     <th>Peran</th>
-                    <th>Aksi</th>
+                    <th>Status Akun</th> <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,6 +38,9 @@ $result = mysqli_query($koneksi, $query);
                         <td><?= htmlspecialchars($user['email']) ?></td>
                         <td><?= htmlspecialchars($user['nama_role']) ?></td>
                         <td>
+                            <span class="status-chip status-<?= strtolower($user['status_akun']) ?>"><?= htmlspecialchars($user['status_akun']) ?></span>
+                        </td>
+                        <td>
                             <a href="edit_pengguna.php?id=<?= $user['id_user'] ?>" class="btn btn-secondary btn-sm">Edit</a>
                             
                             <?php if ($user['nama_role'] == 'Relawan'): ?>
@@ -43,21 +48,32 @@ $result = mysqli_query($koneksi, $query);
                             <?php endif; ?>
                             
                             <?php if ($_SESSION['user_id'] != $user['id_user']): ?>
-                            <a href="../controllers/UserController.php?action=delete&id=<?= $user['id_user'] ?>" 
-                               class="btn btn-danger btn-sm" 
-                               onclick="return confirm('PERINGATAN: Menghapus pengguna ini akan menghapus data terkait. Yakin ingin melanjutkan?');">
-                               Hapus
-                            </a>
+                                <form action="../controllers/UserController.php" method="POST" style="display:inline-block; margin-left: 5px;">
+                                    <input type="hidden" name="action" value="update_status_akun">
+                                    <input type="hidden" name="id_user" value="<?= $user['id_user'] ?>">
+                                    <select name="status_akun" onchange="this.form.submit()" title="Ubah Status Akun">
+                                        <option value="Aktif" <?= $user['status_akun'] == 'Aktif' ? 'selected' : '' ?>>Aktifkan</option>
+                                        <option value="Pending" <?= $user['status_akun'] == 'Pending' ? 'selected' : '' ?>>Pending</option>
+                                        <option value="Diblokir" <?= $user['status_akun'] == 'Diblokir' ? 'selected' : '' ?>>Blokir</option>
+                                    </select>
+                                </form>
+
+                                <a href="../controllers/UserController.php?action=delete&id=<?= $user['id_user'] ?>" 
+                                   class="btn btn-danger btn-sm" 
+                                   onclick="return confirm('PERINGATAN: Menghapus pengguna ini akan menghapus data terkait. Yakin ingin melanjutkan?');">
+                                   Hapus
+                                </a>
                             <?php endif; ?>
                         </td>
                     </tr>
                     <?php endwhile; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="4" style="text-align: center;">Belum ada pengguna yang terdaftar.</td>
+                        <td colspan="5" style="text-align: center;">Belum ada pengguna yang terdaftar.</td>
                     </tr>
                 <?php endif; ?>
             </tbody>
-        </table>
+            </table>
+        </div>
     </main>
 </div>

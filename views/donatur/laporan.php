@@ -2,8 +2,7 @@
 require_once realpath(__DIR__ . '/../../config/database.php');
 require_once realpath(__DIR__ . '/../templates/header.php');
 
-// Query untuk mengambil kegiatan yang sudah selesai
-$query = "SELECT id_kegiatan, nama_kegiatan, tanggal_selesai FROM kegiatan WHERE status = 'Selesai' ORDER BY tanggal_selesai DESC";
+$query = "SELECT * FROM kegiatan WHERE status = 'Selesai' ORDER BY tanggal_selesai DESC";
 $result = mysqli_query($koneksi, $query);
 ?>
 

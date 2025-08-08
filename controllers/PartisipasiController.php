@@ -43,10 +43,35 @@ function handleRegisterKegiatan() {
     mysqli_close($koneksi);
 }
 
+function handleUpdateAbsensi() {
+    global $koneksi;
+    if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] != 1) { // Hanya Admin
+        header("Location: ../login.php");
+        exit();
+    }
 
-// Router Sederhana
-if (isset($_POST['action']) && $_POST['action'] == 'register_kegiatan') {
-    handleRegisterKegiatan();
+    $id_partisipasi = (int)$_POST['id_partisipasi'];
+    $status_kehadiran = $_POST['status_kehadiran'];
+    $allowed_statuses = ['Terdaftar', 'Hadir', 'Batal'];
+
+    if (in_array($status_kehadiran, $allowed_statuses)) {
+        $sql = "UPDATE partisipasi_kegiatan SET status_kehadiran = ? WHERE id_partisipasi = ?";
+        $stmt = mysqli_prepare($koneksi, $sql);
+        mysqli_stmt_bind_param($stmt, 'si', $status_kehadiran, $id_partisipasi);
+        mysqli_stmt_execute($stmt);
+    }
+    
+    // Kembali ke halaman sebelumnya (halaman absensi)
+    header("Location: " . $_SERVER['HTTP_REFERER']);
+    exit();
+}
+
+if (isset($_POST['action'])) {
+    if ($_POST['action'] == 'register_kegiatan') {
+        handleRegisterKegiatan();
+    } elseif ($_POST['action'] == 'update_absensi') {
+        handleUpdateAbsensi();
+    }
 } else {
     header('Location: ../index.php');
 }

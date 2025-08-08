@@ -2,20 +2,23 @@
 require_once realpath(__DIR__ . '/../../config/database.php');
 require_once realpath(__DIR__ . '/../templates/header.php');
 
-// Ambil ID dari URL
-if (!isset($_GET['id'])) {
+if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     header("Location: kelola_kegiatan.php");
     exit();
 }
-$id = (int)$_GET['id'];
 
-// Ambil data kegiatan yang akan diedit
+$kegiatan_id = (int)$_GET['id'];
+
 $stmt = mysqli_prepare($koneksi, "SELECT * FROM kegiatan WHERE id_kegiatan = ?");
-mysqli_stmt_bind_param($stmt, 'i', $id);
+mysqli_stmt_bind_param($stmt, 'i', $kegiatan_id);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 $kegiatan = mysqli_fetch_assoc($result);
-mysqli_stmt_close($stmt);
+
+if (!$kegiatan) {
+    header("Location: kelola_kegiatan.php");
+    exit();
+}
 ?>
 
 <div class="admin-wrapper">

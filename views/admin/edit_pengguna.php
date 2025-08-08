@@ -2,25 +2,25 @@
 require_once realpath(__DIR__ . '/../../config/database.php');
 require_once realpath(__DIR__ . '/../templates/header.php');
 
-// Pastikan ID ada di URL
-if (!isset($_GET['id'])) {
+if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     header("Location: kelola_pengguna.php");
     exit();
 }
+
 $user_id = (int)$_GET['id'];
 
-// Query BARU yang sudah di-JOIN dengan tabel roles
-$stmt = mysqli_prepare($koneksi, "SELECT u.*, r.nama_role 
-                                 FROM users u
-                                 JOIN roles r ON u.id_role_fk = r.id_role
-                                 WHERE u.id_user = ?");
-mysqli_stmt_bind_param($stmt, 'i', $user_id);
-mysqli_stmt_execute($stmt);
-$user = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
-mysqli_stmt_close($stmt);
+$stmt_user = mysqli_prepare($koneksi, "
+    SELECT u.*, r.nama_role 
+    FROM users u 
+    JOIN roles r ON u.id_role_fk = r.id_role 
+    WHERE u.id_user = ?
+");
+mysqli_stmt_bind_param($stmt_user, 'i', $user_id);
+mysqli_stmt_execute($stmt_user);
+$result_user = mysqli_stmt_get_result($stmt_user);
+$user = mysqli_fetch_assoc($result_user);
 
-// Ambil semua role untuk dropdown (jika mengedit user lain)
-$roles = mysqli_query($koneksi, "SELECT * FROM roles");
+$roles = mysqli_query($koneksi, "SELECT * FROM roles ORDER BY nama_role");
 ?>
 <div class="admin-wrapper">
     <?php require_once realpath(__DIR__ . '/../templates/admin_sidebar.php'); ?>

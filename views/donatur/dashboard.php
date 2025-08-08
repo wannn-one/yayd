@@ -58,9 +58,9 @@ $result_kegiatan_selesai = mysqli_query($koneksi, $query_kegiatan_selesai);
         
         <div class="activities-grid">
             <?php if (mysqli_num_rows($result_kegiatan_selesai) > 0): ?>
-                <?php $count = 0; while ($kegiatan = mysqli_fetch_assoc($result_kegiatan_selesai) && $count < 3): $count++; ?>
+                <?php $count = 0; while (($kegiatan = mysqli_fetch_assoc($result_kegiatan_selesai)) && $count < 3): $count++; ?>
                     <div class="card">
-                        <img src="<?= !empty($kegiatan['dokumentasi']) ? $kegiatan['dokumentasi'] : 'https://placehold.co/600x400/png'; ?>" alt="Gambar Kegiatan">
+                        <img src="<?= !empty($kegiatan['dokumentasi']) ? (filter_var($kegiatan['dokumentasi'], FILTER_VALIDATE_URL) ? $kegiatan['dokumentasi'] : BASE_URL . '/' . $kegiatan['dokumentasi']) : 'https://placehold.co/600x400/png'; ?>" alt="Gambar Kegiatan">
                         <div class="card-content">
                             <h4><?= htmlspecialchars($kegiatan['nama_kegiatan']); ?></h4>
                             <p><?= htmlspecialchars(substr($kegiatan['deskripsi'], 0, 80)) . '...'; ?></p>

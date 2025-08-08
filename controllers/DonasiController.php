@@ -77,7 +77,7 @@ function handleUpdateStatus() {
     // Validasi status untuk keamanan
     $allowed_statuses = ['Pending', 'Diterima', 'Ditolak'];
     if (!in_array($status, $allowed_statuses)) {
-        header("Location: ../admin/kelola_donasi.php?error=status_tidak_valid");
+        header("Location: ../views/admin/kelola_donasi.php?error=status_tidak_valid");
         exit();
     }
 
@@ -86,9 +86,9 @@ function handleUpdateStatus() {
     mysqli_stmt_bind_param($stmt, 'si', $status, $id_donasi);
 
     if (mysqli_stmt_execute($stmt)) {
-        header("Location: ../admin/kelola_donasi.php?status=update_sukses");
+        header("Location: ../views/admin/kelola_donasi.php?status=update_sukses");
     } else {
-        header("Location: ../admin/kelola_donasi.php?error=gagal_update");
+        header("Location: ../views/admin/kelola_donasi.php?error=gagal_update");
     }
     mysqli_stmt_close($stmt);
 }

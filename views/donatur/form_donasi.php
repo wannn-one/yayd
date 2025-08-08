@@ -1,17 +1,13 @@
 <?php
-// views/donatur/form_donasi.php
-
 require_once realpath(__DIR__ . '/../../config/database.php');
 require_once realpath(__DIR__ . '/../templates/header.php');
 
-// Security check: hanya donatur yang login boleh akses
 if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] != 2) {
     header("Location: " . BASE_URL . "/login.php?error=akses_ditolak");
     exit();
 }
 
-// Ambil daftar kegiatan yang masih aktif untuk pilihan donasi
-$query_kegiatan = "SELECT id_kegiatan, nama_kegiatan FROM kegiatan WHERE status = 'Akan Datang' OR status = 'Berjalan' ORDER BY nama_kegiatan ASC";
+$query_kegiatan = "SELECT * FROM kegiatan WHERE status IN ('Akan Datang', 'Sedang Berlangsung') ORDER BY tanggal_mulai ASC";
 $result_kegiatan = mysqli_query($koneksi, $query_kegiatan);
 ?>
 

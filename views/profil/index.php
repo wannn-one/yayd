@@ -2,14 +2,11 @@
 require_once realpath(__DIR__ . '/../../config/database.php');
 require_once realpath(__DIR__ . '/../templates/header.php');
 
-$user_id = $_SESSION['user_id'];
-
-// Ambil data terbaru dari user yang sedang login
-$stmt = mysqli_prepare($koneksi, "SELECT nama_lengkap, email, nomor_telepon FROM users WHERE id_user = ?");
-mysqli_stmt_bind_param($stmt, 'i', $user_id);
+$stmt = mysqli_prepare($koneksi, "SELECT * FROM users WHERE id_user = ?");
+mysqli_stmt_bind_param($stmt, 'i', $_SESSION['user_id']);
 mysqli_stmt_execute($stmt);
-$user = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
-mysqli_stmt_close($stmt);
+$result = mysqli_stmt_get_result($stmt);
+$user = mysqli_fetch_assoc($result);
 ?>
 
 <div class="container">
