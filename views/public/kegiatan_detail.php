@@ -29,12 +29,15 @@ if (!$current_kegiatan) {
 $is_relawan = isset($_SESSION['role_id']) && $_SESSION['role_id'] == 3;
 $sudah_daftar = false;
 
+$stmt = null;
 if ($is_relawan) {
-    $stmt = mysqli_prepare($koneksi, "SELECT COUNT(*) FROM partisipasi_kegiatan WHERE id_kegiatan_fk = ? AND id_user_fk = ?");
-    mysqli_stmt_bind_param($stmt, 'ii', $kegiatan_id, $_SESSION['user_id']);
-    mysqli_stmt_execute($stmt);
-    $result_check = mysqli_stmt_get_result($stmt);
-    $sudah_daftar = (mysqli_fetch_row($result_check)[0] > 0);
+    $stmt = mysqli_prepare($koneksi, "SELECT COUNT(*) FROM partisipasi_kegiatan WHERE id_kegiatan_fk = ? AND id_user_relawan_fk = ?");
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, 'ii', $kegiatan_id, $_SESSION['user_id']);
+        mysqli_stmt_execute($stmt);
+        $result_check = mysqli_stmt_get_result($stmt);
+        $sudah_daftar = (mysqli_fetch_row($result_check)[0] > 0);
+    }
 }
 ?>
 
@@ -69,6 +72,8 @@ if ($is_relawan) {
 </div>
 
 <?php 
-mysqli_stmt_close($stmt);
+if ($stmt) {
+    mysqli_stmt_close($stmt);
+}
 require_once realpath(__DIR__ . '/../templates/footer.php'); 
 ?>

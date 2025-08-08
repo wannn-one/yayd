@@ -64,7 +64,7 @@ $result_kegiatan_selesai = mysqli_query($koneksi, $query_kegiatan_selesai);
                         <div class="card-content">
                             <h4><?= htmlspecialchars($kegiatan['nama_kegiatan']); ?></h4>
                             <p><?= htmlspecialchars(substr($kegiatan['deskripsi'], 0, 80)) . '...'; ?></p>
-                            <a href="<?= BASE_URL ?>/controllers/LaporanController.php?action=generate&id=<?= $kegiatan['id_kegiatan'] ?>" class="btn btn-info">Unduh Laporan PDF</a>
+                            <a href="<?= BASE_URL ?>/controllers/LaporanController.php?action=pdf&id=<?= $kegiatan['id_kegiatan'] ?>" class="btn btn-info">Unduh Laporan PDF</a>
                         </div>
                     </div>
                 <?php endwhile; ?>

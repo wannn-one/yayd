@@ -6,7 +6,7 @@ require_once realpath(__DIR__ . '/../vendor/autoload.php');
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-require_once realpath(__DIR__ . '/../vendor/tecnickcom/tcpdf/tcpdf.php');
+require_once realpath(__DIR__ . '/../libs/fpdf186/fpdf.php');
 
 function generatePDF($kegiatan_id) {
     global $koneksi;
@@ -32,20 +32,17 @@ function generatePDF($kegiatan_id) {
     mysqli_stmt_execute($stmt_donasi);
     $result_donasi = mysqli_stmt_get_result($stmt_donasi);
     
-    $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
-    $pdf->SetCreator('Yayasan Yayd');
-    $pdf->SetAuthor('Yayasan Yayd');
-    $pdf->SetTitle('Laporan Donasi - ' . $kegiatan['nama_kegiatan']);
-    $pdf->SetSubject('Laporan Donasi Kegiatan');
-    $pdf->SetMargins(15, 15, 15);
-    $pdf->SetAutoPageBreak(TRUE, 15);
+    $pdf = new FPDF('P', 'mm', 'A4');
     $pdf->AddPage();
+    $pdf->SetMargins(15, 15, 15);
     
-    $pdf->SetFont('helvetica', 'B', 16);
+    // Header
+    $pdf->SetFont('Arial', 'B', 16);
     $pdf->Cell(0, 10, 'LAPORAN DONASI KEGIATAN', 0, 1, 'C');
     $pdf->Ln(5);
     
-    $pdf->SetFont('helvetica', '', 12);
+    // Info Kegiatan
+    $pdf->SetFont('Arial', '', 12);
     $pdf->Cell(40, 7, 'Nama Kegiatan:', 0, 0);
     $pdf->Cell(0, 7, $kegiatan['nama_kegiatan'], 0, 1);
     $pdf->Cell(40, 7, 'Lokasi:', 0, 0);
@@ -54,14 +51,16 @@ function generatePDF($kegiatan_id) {
     $pdf->Cell(0, 7, date('d F Y', strtotime($kegiatan['tanggal_mulai'])), 0, 1);
     $pdf->Ln(10);
     
-    $pdf->SetFont('helvetica', 'B', 10);
+    // Header Tabel
+    $pdf->SetFont('Arial', 'B', 10);
     $pdf->Cell(10, 7, 'No', 1, 0, 'C');
     $pdf->Cell(60, 7, 'Nama Donatur', 1, 0, 'C');
     $pdf->Cell(40, 7, 'Jenis Donasi', 1, 0, 'C');
     $pdf->Cell(40, 7, 'Jumlah', 1, 0, 'C');
     $pdf->Cell(30, 7, 'Tanggal', 1, 1, 'C');
     
-    $pdf->SetFont('helvetica', '', 9);
+    // Data Tabel
+    $pdf->SetFont('Arial', '', 9);
     $no = 1;
     $total_uang = 0;
     
@@ -80,12 +79,13 @@ function generatePDF($kegiatan_id) {
         $pdf->Cell(30, 6, date('d/m/Y', strtotime($donasi['tanggal_donasi'])), 1, 1, 'C');
     }
     
+    // Total
     $pdf->Ln(5);
-    $pdf->SetFont('helvetica', 'B', 10);
+    $pdf->SetFont('Arial', 'B', 10);
     $pdf->Cell(150, 7, 'Total Donasi Uang:', 1, 0, 'R');
     $pdf->Cell(30, 7, 'Rp ' . number_format($total_uang, 0, ',', '.'), 1, 1, 'R');
     
-    $pdf->Output('laporan_donasi_' . $kegiatan['nama_kegiatan'] . '.pdf', 'I');
+    $pdf->Output('I', 'laporan_donasi_' . $kegiatan['nama_kegiatan'] . '.pdf');
 }
 
 function generateExcel($kegiatan_id) {

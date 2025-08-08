@@ -29,7 +29,7 @@ $result = mysqli_query($koneksi, $query);
                         <td><?= htmlspecialchars($kegiatan['nama_kegiatan']) ?></td>
                         <td><?= date('d M Y', strtotime($kegiatan['tanggal_selesai'])) ?></td>
                         <td>
-                            <a href="../controllers/LaporanController.php?action=generate_pdf&kegiatan_id=<?= $kegiatan['id_kegiatan'] ?>" class="btn btn-primary btn-sm" target="_blank">
+                            <a href="../controllers/LaporanController.php?action=pdf&kegiatan_id=<?= $kegiatan['id_kegiatan'] ?>" class="btn btn-primary btn-sm" target="_blank">
                                 <i class="fa fa-file-pdf"></i> Download Laporan
                             </a>
                         </td>
