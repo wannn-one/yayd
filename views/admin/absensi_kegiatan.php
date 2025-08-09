@@ -12,13 +12,7 @@ mysqli_stmt_execute($stmt_kegiatan);
 $result_kegiatan = mysqli_stmt_get_result($stmt_kegiatan);
 $kegiatan = mysqli_fetch_assoc($result_kegiatan);
 
-$stmt_peserta = mysqli_prepare($koneksi, "
-    SELECT u.nama_lengkap, u.email, p.status_kehadiran, p.id_partisipasi 
-    FROM partisipasi_kegiatan p 
-    JOIN users u ON p.id_user_fk = u.id_user 
-    WHERE p.id_kegiatan_fk = ? 
-    ORDER BY u.nama_lengkap ASC
-");
+$stmt_peserta = mysqli_prepare($koneksi, "SELECT u.nama_lengkap, u.email, p.status_kehadiran, p.id_partisipasi FROM partisipasi_kegiatan p JOIN users u ON p.id_user_relawan_fk = u.id_user WHERE p.id_kegiatan_fk = ? ORDER BY u.nama_lengkap ASC");
 mysqli_stmt_bind_param($stmt_peserta, 'i', $kegiatan_id);
 mysqli_stmt_execute($stmt_peserta);
 $result_peserta = mysqli_stmt_get_result($stmt_peserta);
