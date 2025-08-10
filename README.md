@@ -142,7 +142,7 @@ Setelah menjalankan script database, Anda dapat menggunakan role default berikut
 ### Akun Tes
 - **Admin**: admin@example.com / 123123
 - **Donatur**: donatur.ahmad@example.com / 123123
-- **Relawan**: relawan.kevin@example.com / 123123
+- **Relawan**: relawan.lina@example.com / 123123
 
 ### Struktur File
 ```

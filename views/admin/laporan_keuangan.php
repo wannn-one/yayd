@@ -81,12 +81,9 @@ $result_transaksi = mysqli_stmt_get_result($stmt);
         </div>
 
         <div class="download-section">
-            <form action="<?= BASE_URL ?>/controllers/LaporanController.php" method="POST" style="display: inline-block;">
-                <input type="hidden" name="action" value="export_excel">
-                <button type="submit" class="btn btn-primary">
-                    <i class="fa fa-download"></i> Unduh Laporan Excel (Lengkap)
-                </button>
-            </form>
+            <a href="<?= BASE_URL ?>/controllers/LaporanController.php?action=keuangan_excel" class="btn btn-primary">
+                <i class="fa fa-download"></i> Unduh Laporan Excel (Lengkap)
+            </a>
         </div>
     </main>
 </div>

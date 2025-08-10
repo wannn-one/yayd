@@ -23,7 +23,7 @@ function handleRegisterKegiatan() {
     mysqli_stmt_store_result($stmt_cek);
 
     if (mysqli_stmt_num_rows($stmt_cek) > 0) {
-        header("Location: ../relawan/index.php?error=sudah_terdaftar");
+        header("Location: ../kegiatan_detail.php?id=" . $id_kegiatan . "&alert=sudah_terdaftar");
         exit();
     }
     
@@ -33,9 +33,9 @@ function handleRegisterKegiatan() {
     mysqli_stmt_bind_param($stmt_insert, 'ii', $id_user, $id_kegiatan);
 
     if (mysqli_stmt_execute($stmt_insert)) {
-        header("Location: ../relawan/index.php?status=daftar_sukses");
+        header("Location: ../kegiatan_detail.php?id=" . $id_kegiatan . "&alert=daftar_sukses");
     } else {
-        header("Location: ../relawan/index.php?error=gagal_daftar");
+        header("Location: ../kegiatan_detail.php?id=" . $id_kegiatan . "&alert=gagal_daftar");
     }
     
     mysqli_stmt_close($stmt_cek);

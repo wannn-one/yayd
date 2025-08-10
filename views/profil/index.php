@@ -18,12 +18,24 @@ $user = mysqli_fetch_assoc($result);
             <div class="alert-success">Profil berhasil diperbarui!</div>
         <?php endif; ?>
         <?php if(isset($_GET['error'])): ?>
-            <div class="alert-error">Terjadi kesalahan. Silakan coba lagi.</div>
+            <?php 
+            $error_message = 'Terjadi kesalahan. Silakan coba lagi.';
+            if($_GET['error'] == 'email_sudah_ada') {
+                $error_message = 'Email sudah digunakan oleh pengguna lain.';
+            } elseif($_GET['error'] == 'password_tidak_cocok') {
+                $error_message = 'Password dan konfirmasi password tidak cocok.';
+            } elseif($_GET['error'] == 'update_failed') {
+                $error_message = 'Gagal memperbarui profil. Silakan coba lagi.';
+            } elseif($_GET['error'] == 'database_error') {
+                $error_message = 'Terjadi kesalahan database. Silakan coba lagi.';
+            }
+            ?>
+            <div class="alert-error"><?= $error_message ?></div>
         <?php endif; ?>
 
         <form action="<?= BASE_URL ?>/controllers/UserController.php" method="POST">
             <input type="hidden" name="action" value="update_profile">
-            <input type="hidden" name="id_user" value="<?= $user_id ?>">
+            <input type="hidden" name="id_user" value="<?= $_SESSION['user_id'] ?>">
 
             <div class="form-group">
                 <label>Nama Lengkap</label>

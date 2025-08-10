@@ -12,10 +12,16 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 $relawan_id = (int)$_GET['id'];
 
 $stmt_user = mysqli_prepare($koneksi, "SELECT nama_lengkap, email FROM users WHERE id_user = ?");
+
+if (!$stmt_user) {
+    die("Error preparing user statement: " . mysqli_error($koneksi));
+}
+
 mysqli_stmt_bind_param($stmt_user, 'i', $relawan_id);
 mysqli_stmt_execute($stmt_user);
 $result_user = mysqli_stmt_get_result($stmt_user);
 $relawan = mysqli_fetch_assoc($result_user);
+mysqli_stmt_close($stmt_user);
 
 if (!$relawan) {
     echo "<script>alert('Relawan tidak ditemukan!'); window.location.href='kelola_pengguna.php';</script>";
@@ -23,12 +29,17 @@ if (!$relawan) {
 }
 
 $stmt_partisipasi = mysqli_prepare($koneksi, "
-    SELECT k.nama_kegiatan, k.tanggal_mulai, k.tanggal_selesai, p.status_kehadiran 
+    SELECT k.nama_kegiatan, k.tanggal_mulai, k.tanggal_selesai, p.status_kehadiran, p.tanggal_pendaftaran 
     FROM partisipasi_kegiatan p 
     JOIN kegiatan k ON p.id_kegiatan_fk = k.id_kegiatan 
-    WHERE p.id_user_fk = ? 
+    WHERE p.id_user_relawan_fk = ? 
     ORDER BY k.tanggal_mulai DESC
 ");
+
+if (!$stmt_partisipasi) {
+    die("Error preparing statement: " . mysqli_error($koneksi));
+}
+
 mysqli_stmt_bind_param($stmt_partisipasi, 'i', $relawan_id);
 mysqli_stmt_execute($stmt_partisipasi);
 $result_partisipasi = mysqli_stmt_get_result($stmt_partisipasi);
@@ -58,7 +69,7 @@ $result_partisipasi = mysqli_stmt_get_result($stmt_partisipasi);
                         <tr>
                             <td><?= htmlspecialchars($histori['nama_kegiatan']) ?></td>
                             <td><?= date('d M Y', strtotime($histori['tanggal_mulai'])) ?></td>
-                            <td><?= date('d M Y, H:i', strtotime($histori['tanggal_pendaftaran'])) ?></td>
+                            <td><?= $histori['tanggal_pendaftaran'] ? date('d M Y, H:i', strtotime($histori['tanggal_pendaftaran'])) : 'Tidak diketahui' ?></td>
                             <td><?= htmlspecialchars($histori['status_kehadiran']) ?></td>
                         </tr>
                         <?php endwhile; ?>

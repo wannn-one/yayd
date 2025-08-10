@@ -38,11 +38,11 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <a href="<?= BASE_URL ?>/admin/edit_profil_yayasan.php"><i class="fa fa-info-circle"></i> Edit Profil Yayasan</a>
         </li>
 
-        <li class="<?= ($current_page == 'laporan_pdf.php') ? 'active' : '' ?>">
-            <a href="<?= BASE_URL ?>/admin/laporan_pdf.php"><i class="fa fa-chart-line"></i> Kelola Laporan PDF</a>
-        </li>
         <li class="<?= ($current_page == 'laporan_keuangan.php') ? 'active' : '' ?>">
             <a href="<?= BASE_URL ?>/admin/laporan_keuangan.php"><i class="fa fa-file-excel"></i> Laporan Keuangan</a>
+        </li>
+        <li class="<?= ($current_page == 'laporan_selesai.php') ? 'active' : '' ?>">
+            <a href="<?= BASE_URL ?>/admin/laporan_selesai.php"><i class="fa fa-file-alt"></i> Laporan Donasi</a>
         </li>
     </ul>
 </aside>

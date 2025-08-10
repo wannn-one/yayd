@@ -53,7 +53,7 @@ $result_kegiatan_selesai = mysqli_query($koneksi, $query_kegiatan_selesai);
     <section class="dashboard-section">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <h2>Laporan Kegiatan</h2>
-            <a href="<?= BASE_URL ?>/donatur/laporan.php" class="btn btn-secondary">Lihat Semua Laporan</a>
+            <a href="<?= BASE_URL ?>/donatur/laporan_selesai.php" class="btn btn-secondary">Lihat Semua Laporan</a>
         </div>
         
         <div class="activities-grid">

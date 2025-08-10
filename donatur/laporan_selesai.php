@@ -6,5 +6,5 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] != 2) {
     exit();
 }
 
-require_once '../views/donatur/laporan.php';
+require_once '../views/donatur/laporan_selesai.php';
 ?>

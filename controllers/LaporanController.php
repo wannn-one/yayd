@@ -11,7 +11,7 @@ require_once realpath(__DIR__ . '/../libs/fpdf186/fpdf.php');
 function generatePDF($kegiatan_id) {
     global $koneksi;
     
-    if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] != 2) {
+    if (!isset($_SESSION['user_id']) || ($_SESSION['role_id'] != 1 && $_SESSION['role_id'] != 2)) {
         header("Location: ../login.php?error=akses_ditolak");
         exit();
     }
@@ -91,7 +91,7 @@ function generatePDF($kegiatan_id) {
 function generateExcel($kegiatan_id) {
     global $koneksi;
     
-    if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] != 2) {
+    if (!isset($_SESSION['user_id']) || ($_SESSION['role_id'] != 1 && $_SESSION['role_id'] != 2)) {
         header("Location: ../login.php?error=akses_ditolak");
         exit();
     }
@@ -173,6 +173,129 @@ function generateExcel($kegiatan_id) {
     exit();
 }
 
+function generateLaporanKeuanganExcel() {
+    global $koneksi;
+    
+    if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] != 1) {
+        header("Location: ../login.php?error=akses_ditolak");
+        exit();
+    }
+    
+    // Query untuk mendapatkan semua transaksi
+    $query_transaksi = "
+        (SELECT 
+            tanggal_donasi as tanggal, 
+            CONCAT('Donasi dari ', u.nama_lengkap) as deskripsi, 
+            jumlah_uang as pemasukan, 
+            0 as pengeluaran 
+        FROM donasi d 
+        JOIN users u ON d.id_user_donatur_fk = u.id_user 
+        WHERE d.status = 'Diterima' AND d.jenis_donasi = 'Uang' AND d.jumlah_uang > 0) 
+        
+        UNION ALL 
+        
+        (SELECT 
+            tanggal_distribusi as tanggal, 
+            deskripsi, 
+            0 as pemasukan, 
+            nominal as pengeluaran 
+        FROM distribusi_donasi 
+        WHERE nominal IS NOT NULL AND nominal > 0) 
+        
+        ORDER BY tanggal ASC
+    ";
+    
+    $result_transaksi = mysqli_query($koneksi, $query_transaksi);
+    
+    // Query untuk summary
+    $pemasukan_res = mysqli_query($koneksi, "SELECT SUM(jumlah_uang) as total FROM donasi WHERE status = 'Diterima' AND jenis_donasi = 'Uang'");
+    $total_pemasukan = mysqli_fetch_assoc($pemasukan_res)['total'] ?? 0;
+    
+    $pengeluaran_res = mysqli_query($koneksi, "SELECT SUM(nominal) as total FROM distribusi_donasi WHERE nominal IS NOT NULL");
+    $total_pengeluaran = mysqli_fetch_assoc($pengeluaran_res)['total'] ?? 0;
+    
+    $saldo_akhir = $total_pemasukan - $total_pengeluaran;
+    
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+    
+    // Header
+    $sheet->setCellValue('A1', 'LAPORAN KEUANGAN YAYD');
+    $sheet->mergeCells('A1:D1');
+    $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(16);
+    $sheet->getStyle('A1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+    
+    $sheet->setCellValue('A2', 'Periode: Seluruh Data');
+    $sheet->mergeCells('A2:D2');
+    $sheet->getStyle('A2')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+    
+    // Summary
+    $sheet->setCellValue('A4', 'RINGKASAN KEUANGAN');
+    $sheet->getStyle('A4')->getFont()->setBold(true);
+    
+    $sheet->setCellValue('A5', 'Total Pemasukan:');
+    $sheet->setCellValue('B5', $total_pemasukan);
+    $sheet->getStyle('B5')->getNumberFormat()->setFormatCode('#,##0');
+    
+    $sheet->setCellValue('A6', 'Total Pengeluaran:');
+    $sheet->setCellValue('B6', $total_pengeluaran);
+    $sheet->getStyle('B6')->getNumberFormat()->setFormatCode('#,##0');
+    
+    $sheet->setCellValue('A7', 'Saldo Akhir:');
+    $sheet->setCellValue('B7', $saldo_akhir);
+    $sheet->getStyle('B7')->getNumberFormat()->setFormatCode('#,##0');
+    $sheet->getStyle('A7:B7')->getFont()->setBold(true);
+    
+    // Header tabel transaksi
+    $sheet->setCellValue('A9', 'RIWAYAT TRANSAKSI');
+    $sheet->getStyle('A9')->getFont()->setBold(true);
+    
+    $sheet->setCellValue('A11', 'Tanggal');
+    $sheet->setCellValue('B11', 'Deskripsi');
+    $sheet->setCellValue('C11', 'Pemasukan');
+    $sheet->setCellValue('D11', 'Pengeluaran');
+    
+    $sheet->getStyle('A11:D11')->getFont()->setBold(true);
+    $sheet->getStyle('A11:D11')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
+    $sheet->getStyle('A11:D11')->getFill()->getStartColor()->setRGB('E8E8E8');
+    
+    // Data transaksi
+    $row = 12;
+    while ($transaksi = mysqli_fetch_assoc($result_transaksi)) {
+        $sheet->setCellValue('A' . $row, date('d/m/Y', strtotime($transaksi['tanggal'])));
+        $sheet->setCellValue('B' . $row, $transaksi['deskripsi']);
+        $sheet->setCellValue('C' . $row, $transaksi['pemasukan'] > 0 ? $transaksi['pemasukan'] : '');
+        $sheet->setCellValue('D' . $row, $transaksi['pengeluaran'] > 0 ? $transaksi['pengeluaran'] : '');
+        
+        // Format currency untuk pemasukan dan pengeluaran
+        if ($transaksi['pemasukan'] > 0) {
+            $sheet->getStyle('C' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        }
+        if ($transaksi['pengeluaran'] > 0) {
+            $sheet->getStyle('D' . $row)->getNumberFormat()->setFormatCode('#,##0');
+        }
+        
+        $row++;
+    }
+    
+    // Auto size columns
+    foreach (range('A', 'D') as $col) {
+        $sheet->getColumnDimension($col)->setAutoSize(true);
+    }
+    
+    // Border untuk tabel
+    $sheet->getStyle('A11:D' . ($row - 1))->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+    
+    $writer = new Xlsx($spreadsheet);
+    
+    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    header('Content-Disposition: attachment;filename="laporan_keuangan_yayd_' . date('Y-m-d') . '.xlsx"');
+    header('Cache-Control: max-age=0');
+    
+    $writer->save('php://output');
+    exit();
+}
+
 session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -186,12 +309,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         case 'excel':
             generateExcel($kegiatan_id);
             break;
+        case 'keuangan_excel':
+            generateLaporanKeuanganExcel();
+            break;
         default:
-            header("Location: ../donatur/laporan.php");
+            // Redirect berdasarkan role user
+            if ($_SESSION['role_id'] == 1) {
+                header("Location: ../admin/laporan_selesai.php");
+            } else {
+                header("Location: ../donatur/laporan_selesai.php");
+            }
             break;
     }
 } else {
-    header("Location: ../donatur/laporan.php");
+    // Redirect berdasarkan role user
+    if ($_SESSION['role_id'] == 1) {
+        header("Location: ../admin/laporan_selesai.php");
+    } else {
+        header("Location: ../donatur/laporan_selesai.php");
+    }
 }
 exit();
 ?>

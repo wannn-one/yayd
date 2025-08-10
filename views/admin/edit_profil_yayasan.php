@@ -18,6 +18,22 @@ $profil = mysqli_fetch_assoc($profil_result);
         <?php if(isset($_GET['status']) && $_GET['status'] == 'sukses'): ?>
             <div class="alert-success">Profil yayasan berhasil diperbarui!</div>
         <?php endif; ?>
+        
+        <?php if(isset($_GET['error'])): ?>
+            <?php 
+            $error_message = 'Terjadi kesalahan. Silakan coba lagi.';
+            if($_GET['error'] == 'update_failed') {
+                $error_message = 'Gagal memperbarui profil yayasan. Silakan periksa data yang Anda masukkan.';
+            } elseif($_GET['error'] == 'prepare_failed') {
+                $error_message = 'Terjadi kesalahan database. Silakan coba lagi nanti.';
+            } elseif($_GET['error'] == 'invalid_request') {
+                $error_message = 'Permintaan tidak valid.';
+            } elseif($_GET['error'] == 'akses_ditolak') {
+                $error_message = 'Akses ditolak. Hanya admin yang dapat mengedit profil yayasan.';
+            }
+            ?>
+            <div class="alert-error"><?= $error_message ?></div>
+        <?php endif; ?>
 
         <div class="form-container-lg" style="margin: 0;">
             <form action="<?= BASE_URL ?>/controllers/ProfilController.php" method="POST">
@@ -58,3 +74,25 @@ $profil = mysqli_fetch_assoc($profil_result);
         </div>
     </main>
 </div>
+
+<style>
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+.alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    font-weight: 500;
+}
+</style>

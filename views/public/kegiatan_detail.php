@@ -42,6 +42,30 @@ if ($is_relawan) {
 ?>
 
 <div class="container dashboard-container">
+    <?php
+    // Handle alert messages
+    if (isset($_GET['alert'])) {
+        $alert = $_GET['alert'];
+        $message = '';
+        $alert_class = '';
+        
+        if ($alert == 'daftar_sukses') {
+            $message = 'Berhasil mendaftar kegiatan! Anda sudah terdaftar sebagai relawan.';
+            $alert_class = 'alert-success';
+        } elseif ($alert == 'sudah_terdaftar') {
+            $message = 'Anda sudah terdaftar untuk kegiatan ini sebelumnya.';
+            $alert_class = 'alert-info';
+        } elseif ($alert == 'gagal_daftar') {
+            $message = 'Terjadi kesalahan saat mendaftar. Silakan coba lagi.';
+            $alert_class = 'alert-error';
+        }
+        
+        if ($message) {
+            echo '<div class="alert ' . $alert_class . '" id="alertMessage">' . $message . '</div>';
+        }
+    }
+    ?>
+    
     <a href="<?= BASE_URL ?>/relawan/index.php" class="btn btn-secondary">&larr; Kembali ke Beranda</a>
 
     <div class="detail-wrapper">
@@ -70,6 +94,83 @@ if ($is_relawan) {
         </div>
     </div>
 </div>
+
+<style>
+.alert {
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    position: relative;
+    animation: slideDown 0.3s ease-out;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-info {
+    background-color: #cce6ff;
+    color: #004085;
+    border: 1px solid #99d1ff;
+}
+
+.alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.alert.fade-out {
+    animation: fadeOut 0.5s ease-out forwards;
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+</style>
+
+<script>
+// Auto-hide alert after 5 seconds
+document.addEventListener('DOMContentLoaded', function() {
+    const alertMessage = document.getElementById('alertMessage');
+    if (alertMessage) {
+        setTimeout(function() {
+            alertMessage.classList.add('fade-out');
+            setTimeout(function() {
+                alertMessage.remove();
+                
+                // Remove alert parameter from URL without page reload
+                if (window.history.replaceState) {
+                    const url = new URL(window.location);
+                    url.searchParams.delete('alert');
+                    window.history.replaceState({}, '', url);
+                }
+            }, 500);
+        }, 5000);
+    }
+});
+</script>
 
 <?php 
 if ($stmt) {

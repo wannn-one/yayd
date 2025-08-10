@@ -17,6 +17,11 @@ $query_history = "SELECT k.nama_kegiatan, k.tanggal_mulai, p.status_kehadiran
                   WHERE p.id_user_relawan_fk = ?
                   ORDER BY k.tanggal_mulai DESC";
 $stmt_history = mysqli_prepare($koneksi, $query_history);
+
+if (!$stmt_history) {
+    die("Error preparing history statement: " . mysqli_error($koneksi));
+}
+
 mysqli_stmt_bind_param($stmt_history, 'i', $user_id);
 mysqli_stmt_execute($stmt_history);
 $result_history = mysqli_stmt_get_result($stmt_history);
@@ -102,5 +107,6 @@ $result_history = mysqli_stmt_get_result($stmt_history);
 </div>
 
 <?php 
+mysqli_stmt_close($stmt_history);
 require_once realpath(__DIR__ . '/../templates/footer.php'); 
 ?>
