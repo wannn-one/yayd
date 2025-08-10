@@ -4,12 +4,15 @@ session_start();
 require_once 'config/database.php';
 require_once 'views/templates/header.php';
 
-$query_profil = "SELECT visi, misi FROM profil_yayd WHERE id = 1";
+$query_profil = "SELECT visi, misi, alamat_kontak, email_kontak, telepon_kontak FROM profil_yayd WHERE id = 1";
 $result_profil = mysqli_query($koneksi, $query_profil);
 $profil = mysqli_fetch_assoc($result_profil);
 
 $query_kegiatan = "SELECT nama_kegiatan, deskripsi, dokumentasi FROM kegiatan WHERE status = 'Akan Datang' ORDER BY tanggal_mulai ASC LIMIT 3";
 $result_kegiatan = mysqli_query($koneksi, $query_kegiatan);
+
+$query_kegiatan_selesai = "SELECT nama_kegiatan, deskripsi, dokumentasi FROM kegiatan WHERE status = 'Selesai' ORDER BY tanggal_selesai DESC LIMIT 6";
+$result_kegiatan_selesai = mysqli_query($koneksi, $query_kegiatan_selesai);
 
 ?>
 
@@ -60,7 +63,35 @@ $hero_slides = [
         </div>
         <div>
             <h3>Misi Kami:</h3>
-            <p><?= htmlspecialchars($profil['misi'] ?? 'Misi belum diatur.'); ?></p>
+            <?php 
+            $misi = $profil['misi'] ?? 'Misi belum diatur.';
+            if ($misi !== 'Misi belum diatur.') {
+                if (preg_match('/\d+\.\s+/', $misi)) {
+                    $misi_parts = preg_split('/\d+\.\s+/', $misi);
+                    
+                    $misi_parts = array_filter($misi_parts, function($part) {
+                        return !empty(trim($part));
+                    });
+                    
+                    if (!empty($misi_parts)) {
+                        echo '<ol class="misi-list">';
+                        foreach ($misi_parts as $part) {
+                            $clean_part = trim($part);
+                            if (!empty($clean_part)) {
+                                echo '<li>' . htmlspecialchars($clean_part) . '</li>';
+                            }
+                        }
+                        echo '</ol>';
+                    } else {
+                        echo '<p>' . htmlspecialchars($misi) . '</p>';
+                    }
+                } else {
+                    echo '<p>' . htmlspecialchars($misi) . '</p>';
+                }
+            } else {
+                echo '<p>' . htmlspecialchars($misi) . '</p>';
+            }
+            ?>
         </div>
     </div>
 </section>
@@ -88,6 +119,29 @@ $hero_slides = [
     </div>
 </section>
 
+<!-- kegiatan yang sudah selesai -->
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">Kegiatan Yang Telah Selesai</h2>
+        <div class="activities-grid">
+
+            <?php if (mysqli_num_rows($result_kegiatan_selesai) > 0): ?>
+                <?php while ($kegiatan_selesai = mysqli_fetch_assoc($result_kegiatan_selesai)): ?>
+                    <div class="card">
+                        <img src="<?= !empty($kegiatan_selesai['dokumentasi']) ? $kegiatan_selesai['dokumentasi'] : 'https://placehold.co/600x400/png'; ?>" alt="<?= htmlspecialchars($kegiatan_selesai['nama_kegiatan']); ?>">
+                        <div class="card-content">
+                            <h3><?= htmlspecialchars($kegiatan_selesai['nama_kegiatan']); ?></h3>
+                            <p><?= htmlspecialchars(substr($kegiatan_selesai['deskripsi'], 0, 100)) . '...'; ?></p>
+                        </div>
+                    </div>
+                <?php endwhile; ?>
+            <?php else: ?>
+                <p>Belum ada kegiatan yang telah selesai untuk ditampilkan.</p>
+            <?php endif; ?>
+
+        </div>
+    </div>
+</section>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {

@@ -161,5 +161,3 @@ if (!$result) {
     font-style: italic;
 }
 </style>
-
-<?php require_once realpath(__DIR__ . '/../templates/footer.php'); ?> 

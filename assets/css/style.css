@@ -292,10 +292,111 @@ footer {
     background: #f8f9fa;
     color: #666;
     padding: 40px 0;
-    text-align: center;
+    text-align: left;
     border-top: 1px solid #e0e0e0;
     margin-top: auto;
     flex-shrink: 0;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 30px;
+}
+
+.footer-section h3 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+    font-weight: 600;
+}
+
+.footer-section p {
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.contact-item span {
+    font-size: 1.2em;
+    margin-top: 2px;
+}
+
+.contact-item p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+.contact-item a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.contact-item a:hover {
+    text-decoration: underline;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links li {
+    margin-bottom: 8px;
+}
+
+.footer-links a {
+    color: #666;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: #007bff;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+    color: #888;
+}
+
+@media (max-width: 768px) {
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+}
+
+/* Styling untuk list misi */
+.misi-list {
+    padding-left: 20px;
+    margin: 15px 0;
+}
+
+.misi-list li {
+    margin-bottom: 10px;
+    line-height: 1.6;
+    text-align: justify;
+}
+
+.misi-list li::marker {
+    font-weight: bold;
+    color: #252525;
 }
 
 
