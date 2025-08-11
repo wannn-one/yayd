@@ -4,7 +4,7 @@ session_start();
 require_once 'config/database.php';
 require_once 'views/templates/header.php';
 
-$query_profil = "SELECT visi, misi FROM profil_yayd WHERE id = 1";
+$query_profil = "SELECT visi, misi, alamat_kontak, email_kontak, telepon_kontak FROM profil_yayd WHERE id = 1";
 $result_profil = mysqli_query($koneksi, $query_profil);
 $profil = mysqli_fetch_assoc($result_profil);
 

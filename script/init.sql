@@ -13,7 +13,7 @@ CREATE TABLE `roles` (
 CREATE TABLE `users` (
   `id_user` INT AUTO_INCREMENT PRIMARY KEY,
   `id_role_fk` INT NOT NULL,
-  `status_akun` ENUM('Aktif', 'Pending', 'Diblokir') NOT NULL DEFAULT 'Pending' COMMENT 'Status persetujuan akun oleh admin',
+  `status_akun` ENUM('Aktif', 'Pending', 'Diblokir') NOT NULL DEFAULT 'Aktif' COMMENT 'Status persetujuan akun oleh admin',
   `nama_lengkap` VARCHAR(255) NOT NULL,
   `email` VARCHAR(255) NOT NULL UNIQUE,
   `password` VARCHAR(255) NOT NULL COMMENT 'Password harus disimpan dalam bentuk hash',
