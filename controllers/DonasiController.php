@@ -12,6 +12,12 @@ function handleCreateDonation() {
         exit();
     }
 
+    // Check if donatur account is pending
+    if (isset($_SESSION['status_akun']) && $_SESSION['status_akun'] == 'Pending') {
+        header("Location: ../donatur/index.php?error=akun_pending");
+        exit();
+    }
+
     // Ambil data dari form
     $id_user_donatur = $_SESSION['user_id'];
     $jenis_donasi = $_POST['jenis_donasi'];

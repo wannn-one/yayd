@@ -21,6 +21,26 @@ $roles = mysqli_query($koneksi, "SELECT * FROM roles ORDER BY nama_role");
                     <input type="email" name="email" required>
                 </div>
                 <div class="form-group">
+                    <label>Nomor Telepon</label>
+                    <input type="text" name="nomor_telepon" placeholder="Contoh: 081234567890">
+                </div>
+                <div class="form-group">
+                    <label>Alamat</label>
+                    <textarea name="alamat" rows="3" placeholder="Alamat lengkap"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Jenis Kelamin</label>
+                    <select name="jenis_kelamin">
+                        <option value="">-- Pilih Jenis Kelamin --</option>
+                        <option value="Laki-laki">Laki-laki</option>
+                        <option value="Perempuan">Perempuan</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Alasan Bergabung</label>
+                    <textarea name="alasan_bergabung" rows="3" placeholder="Alasan ingin bergabung dengan YAYD"></textarea>
+                </div>
+                <div class="form-group">
                     <label>Password</label>
                     <input type="password" name="password" required>
                 </div>

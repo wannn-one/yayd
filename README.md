@@ -33,17 +33,18 @@ YAYD (Yho Akhirat Yho Dunyo) adalah platform komunitas berbasis web yang kompreh
 ### 👥 Pengelolaan Pengguna
 - **Autentikasi Aman**: Sistem registrasi dan login pengguna
 - **Kontrol Akses Berbasis Peran**: Izin berbeda untuk jenis pengguna berbeda
-- **Pengelolaan Profil**: Informasi pribadi dan detail kontak
+- **Pengelolaan Profil Lengkap**: Informasi pribadi, kontak, alamat, jenis kelamin, dan alasan bergabung
+- **Sistem Approval**: Semua pendaftar baru memerlukan persetujuan admin sebelum dapat menggunakan fitur platform
 
 ### 📊 Dashboard Admin
-- **Pengelolaan Pengguna**: Tambah, edit, dan kelola pengguna sistem
+- **Pengelolaan Pengguna**: Tambah, edit, kelola pengguna, dan approval pendaftaran
 - **Pengawasan Donasi**: Pantau dan setujui donasi
 - **Koordinasi Kegiatan**: Kelola semua kegiatan komunitas
 - **Sistem Laporan**: Buat laporan komprehensif
 
 ### 🌐 Antarmuka Publik
 - **Profil Komunitas**: Tampilkan visi, misi, dan deskripsi organisasi
-- **Kegiatan Mendatang**: Showcaset acara komunitas yang direncanakan
+- **Kegiatan Mendatang**: Showcase acara komunitas yang direncanakan
 - **Registrasi Mudah**: Pemilihan peran dan proses registrasi sederhana
 
 ## Fitur Versi 2.0
@@ -54,11 +55,24 @@ YAYD (Yho Akhirat Yho Dunyo) adalah platform komunitas berbasis web yang kompreh
 
 ### 📅 Manajemen Konten & Kegiatan
 - **Kelola Konten Terpusat**: Admin dapat mengelola semua konten dari satu menu, termasuk:
-   - **Profil Yayasan**: Mengubah Visi, Misi, dan info kontak yang tampil di halaman publik.
+  - **Profil Yayasan**: Mengubah Visi, Misi, dan info kontak yang tampil di halaman publik.
 
 ### 👥 Pengelolaan Pengguna
-- **Approval Pendaftaran Relawan**: Setiap relawan baru harus disetujui oleh Admin sebelum akunnya aktif dan bisa login.
+- **Approval Pendaftaran Universal**: Semua pengguna baru (donatur dan relawan) harus disetujui oleh Admin sebelum dapat menggunakan fitur platform.
+- **Profil Pengguna Lengkap**: Sistem pencatatan data komprehensif meliputi:
+  - Informasi dasar (nama, email, password)
+  - Kontak (nomor telepon, alamat)
+  - Data demografis (jenis kelamin)
+  - Motivasi (alasan bergabung yang dapat diedit)
 - **Absensi Digital**: Admin dapat mencatat kehadiran relawan (Hadir, Batal) pada setiap kegiatan.
+- **Manajemen Status**: Sistem status akun (Aktif, Pending, Diblokir) dengan kontrol penuh admin.
+
+### 🔐 Sistem Keamanan & Kontrol Akses
+- **Pembatasan Akses Pending**: User dengan status pending dapat login namun tidak dapat menggunakan fitur utama:
+  - Donatur pending: Tidak dapat membuat donasi
+  - Relawan pending: Tidak dapat mendaftar kegiatan
+- **Notifikasi Status Jelas**: Dashboard menampilkan peringatan dan estimasi waktu verifikasi (maksimal 2x24 jam)
+- **Validasi Ganda**: Proteksi frontend UI dan backend validation untuk mencegah akses tidak sah
 
 ## Cara Setup
 
@@ -95,7 +109,7 @@ git clone [repository-url] yayd
 4. Import schema database:
    - Buka file `script/init.sql` dari folder project
    - Copy dan jalankan seluruh isi file tersebut di MySQL Workbench
-   - Opsional: Jalankan juga `script/seed.sql` untuk data contoh tambahan
+   - **WAJIB**: Jalankan juga `script/seed.sql` untuk data contoh yang telah diperbarui
 
 #### 4. Install FPDF Library
 1. Download FPDF dari [http://www.fpdf.org/](http://www.fpdf.org/)
@@ -114,7 +128,7 @@ git clone [repository-url] yayd
    ```
 4. Jika ada error, pastikan Anda memiliki Composer terinstal.
 
-#### 5. Konfigurasi Koneksi Database
+#### 6. Konfigurasi Koneksi Database
 1. Buka file `config/config.php`
 2. Perbarui kredensial database sesuai dengan setup MySQL Workbench Anda:
    ```php
@@ -128,21 +142,23 @@ git clone [repository-url] yayd
    define('BASE_URL', 'http://localhost/yayd');
    ```
 
-#### 6. Akses Aplikasi
+#### 7. Akses Aplikasi
 1. Buka web browser
 2. Navigasi ke: `http://localhost/yayd`
 3. Halaman utama akan muncul menampilkan platform komunitas YAYD
 
 ### Akses Default
 Setelah menjalankan script database, Anda dapat menggunakan role default berikut:
-- **Admin** (ID: 1)
-- **Donatur** (ID: 2)
-- **Relawan** (ID: 3)
+- **Admin** (ID: 1) - Status: Aktif
+- **Donatur** (ID: 2) - Status: Pending/Aktif (campuran untuk testing)
+- **Relawan** (ID: 3) - Status: Pending/Aktif (campuran untuk testing)
 
 ### Akun Tes
-- **Admin**: admin@example.com / 123123
-- **Donatur**: donatur.ahmad@example.com / 123123
-- **Relawan**: relawan.lina@example.com / 123123
+- **Admin**: admin@example.com / 123123 (Status: Aktif)
+- **Donatur (Pending)**: donatur.ahmad@example.com / 123123 (Status: Pending)
+- **Donatur (Aktif)**: donatur.chandra@example.com / 123123 (Status: Aktif)
+- **Relawan (Pending)**: relawan.kevin@example.com / 123123 (Status: Pending)
+- **Relawan (Aktif)**: relawan.lina@example.com / 123123 (Status: Aktif)
 
 ### Struktur File
 ```
@@ -154,16 +170,23 @@ yayd/
 ├── config/             # Konfigurasi database dan aplikasi
 ├── controllers/        # Controller logika bisnis
 ├── views/              # Template dan komponen UI
-├── script/             # Script inisialisasi database
+├── script/             # Script inisialisasi database dan seed data
 ├── profil/             # Pengelolaan profil
 └── libs/               # Library tambahan
 ```
+
+### Alur Kerja Sistem
+1. **Pendaftaran**: User mendaftar dengan data lengkap → Status: Pending
+2. **Login Terbatas**: User pending dapat login namun tidak dapat menggunakan fitur utama
+3. **Admin Approval**: Admin mengaktifkan akun melalui panel kelola pengguna
+4. **Akses Penuh**: User aktif dapat menggunakan semua fitur sesuai role
 
 ### Troubleshooting
 - **Masalah Koneksi Database**: Pastikan MySQL berjalan di MySQL Workbench dan kredensial benar
 - **Error Permission**: Pastikan permission file yang tepat di direktori htdocs
 - **Masalah Style/CSS**: Periksa apakah file `assets/css/style.css` dapat diakses
 - **Masalah Session**: Pastikan PHP session support telah diaktifkan di XAMPP
+- **User Tidak Bisa Akses Fitur**: Periksa status akun user, mungkin masih pending dan perlu diaktifkan admin
 
 ---
 

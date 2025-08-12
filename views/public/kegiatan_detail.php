@@ -58,6 +58,9 @@ if ($is_relawan) {
         } elseif ($alert == 'gagal_daftar') {
             $message = 'Terjadi kesalahan saat mendaftar. Silakan coba lagi.';
             $alert_class = 'alert-error';
+        } elseif ($alert == 'akun_pending') {
+            $message = 'Maaf, Anda belum dapat mendaftar kegiatan karena akun Anda masih dalam status pending. Silakan tunggu hingga admin melakukan verifikasi dan aktivasi terhadap akun Anda.';
+            $alert_class = 'alert-warning';
         }
         
         if ($message) {
@@ -81,7 +84,12 @@ if ($is_relawan) {
             <p><?= nl2br(htmlspecialchars($current_kegiatan['deskripsi'])) ?></p>
 
             <?php if ($is_relawan): // Tampilkan tombol hanya untuk Relawan ?>
-                <?php if ($sudah_daftar): ?>
+                <?php if (isset($_SESSION['status_akun']) && $_SESSION['status_akun'] == 'Pending'): ?>
+                    <div style="padding: 15px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px; color: #856404; margin-top: 15px;">
+                        <strong>Akun Pending</strong><br>
+                        Anda belum dapat mendaftar kegiatan karena akun masih dalam status verifikasi admin.
+                    </div>
+                <?php elseif ($sudah_daftar): ?>
                     <button class="btn btn-secondary" disabled>Anda Sudah Terdaftar</button>
                 <?php else: ?>
                     <form action="<?= BASE_URL ?>/controllers/PartisipasiController.php" method="POST">
@@ -121,6 +129,12 @@ if ($is_relawan) {
     background-color: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
 }
 
 @keyframes slideDown {

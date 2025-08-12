@@ -18,10 +18,37 @@ $result_kegiatan_selesai = mysqli_query($koneksi, $query_kegiatan_selesai);
 
 <div class="container dashboard-container">
     
+    <?php
+    // Handle error messages
+    if (isset($_GET['error']) && $_GET['error'] == 'akun_pending') {
+        echo '<div class="alert-warning" style="margin-bottom: 20px; padding: 15px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px; color: #856404;">
+                <strong>⚠️ Akses Ditolak</strong><br>
+                Anda mencoba membuat donasi namun akun Anda masih dalam status pending. Silakan tunggu aktivasi dari admin.
+              </div>';
+    }
+    ?>
+    
+    <?php if (isset($_SESSION['status_akun']) && $_SESSION['status_akun'] == 'Pending'): ?>
+    <div class="alert-warning" style="margin-bottom: 20px; padding: 15px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px; color: #856404;">
+        <strong>⚠️ Status Akun: Pending - Akses Dibatasi</strong><br>
+        Akun Anda sedang dalam proses verifikasi oleh admin. <strong>Anda tidak dapat membuat donasi</strong> hingga admin melakukan aktivasi terhadap akun Anda.
+        <br><br>
+        <strong>Untuk mempercepat verifikasi:</strong>
+        <ul style="margin: 10px 0 0 20px;">
+            <li>Pastikan data profil Anda sudah lengkap</li>
+            <li>Tunggu maksimal 2x24 jam untuk aktivasi</li>
+        </ul>
+    </div>
+    <?php endif; ?>
+    
     <section class="dashboard-section">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <h2>Riwayat Donasi</h2>
-            <a href="<?= BASE_URL ?>/donatur/form_donasi.php" class="btn btn-primary">Buat Donasi Baru</a>
+            <?php if (isset($_SESSION['status_akun']) && $_SESSION['status_akun'] == 'Pending'): ?>
+                <span class="btn btn-secondary" style="opacity: 0.6; cursor: not-allowed;" title="Akun pending - tidak dapat membuat donasi">Buat Donasi Baru (Pending)</span>
+            <?php else: ?>
+                <a href="<?= BASE_URL ?>/donatur/form_donasi.php" class="btn btn-primary">Buat Donasi Baru</a>
+            <?php endif; ?>
         </div>
         <div class="history-card">
             <div class="history-header">

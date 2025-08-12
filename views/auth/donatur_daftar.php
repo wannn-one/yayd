@@ -44,6 +44,30 @@ require_once realpath(__DIR__ . '/../templates/header.php');
         </div>
         
         <div class="form-group">
+            <label for="nomor_telepon">Nomor Telepon</label>
+            <input type="text" id="nomor_telepon" name="nomor_telepon" placeholder="Contoh: 081234567890">
+        </div>
+        
+        <div class="form-group">
+            <label for="alamat">Alamat</label>
+            <textarea id="alamat" name="alamat" rows="3" placeholder="Alamat lengkap"></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="jenis_kelamin">Jenis Kelamin</label>
+            <select id="jenis_kelamin" name="jenis_kelamin">
+                <option value="">-- Pilih Jenis Kelamin --</option>
+                <option value="Laki-laki">Laki-laki</option>
+                <option value="Perempuan">Perempuan</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="alasan_bergabung">Alasan Bergabung</label>
+            <textarea id="alasan_bergabung" name="alasan_bergabung" rows="3" placeholder="Ceritakan alasan Anda ingin berkontribusi sebagai donatur"></textarea>
+        </div>
+        
+        <div class="form-group">
             <button type="submit" class="btn">Daftar sebagai Donatur</button>
         </div>
         

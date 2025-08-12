@@ -12,6 +12,13 @@ function handleRegisterKegiatan() {
         exit();
     }
 
+    // Check if relawan account is pending
+    if (isset($_SESSION['status_akun']) && $_SESSION['status_akun'] == 'Pending') {
+        $id_kegiatan = (int)$_POST['id_kegiatan'];
+        header("Location: ../kegiatan_detail.php?id=" . $id_kegiatan . "&alert=akun_pending");
+        exit();
+    }
+
     $id_user = $_SESSION['user_id'];
     $id_kegiatan = (int)$_POST['id_kegiatan'];
 

@@ -1,13 +1,17 @@
 <?php
 require_once realpath(__DIR__ . '/../config/database.php');
 
-function createUser($nama_lengkap, $email, $password, $id_role_fk) {
+function createUser($nama_lengkap, $email, $password, $id_role_fk, $nomor_telepon = null, $alamat = null, $jenis_kelamin = null, $alasan_bergabung = null) {
     global $koneksi;
     
     // Sanitize input
     $nama_lengkap = mysqli_real_escape_string($koneksi, trim($nama_lengkap));
     $email = mysqli_real_escape_string($koneksi, trim($email));
     $id_role_fk = (int)$id_role_fk;
+    $nomor_telepon = $nomor_telepon ? mysqli_real_escape_string($koneksi, trim($nomor_telepon)) : null;
+    $alamat = $alamat ? mysqli_real_escape_string($koneksi, trim($alamat)) : null;
+    $jenis_kelamin = $jenis_kelamin ? mysqli_real_escape_string($koneksi, trim($jenis_kelamin)) : null;
+    $alasan_bergabung = $alasan_bergabung ? mysqli_real_escape_string($koneksi, trim($alasan_bergabung)) : null;
     
     // Check if email already exists using prepared statement
     $stmt_check = mysqli_prepare($koneksi, "SELECT id_user FROM users WHERE email = ?");
@@ -30,13 +34,13 @@ function createUser($nama_lengkap, $email, $password, $id_role_fk) {
     $password_hash = password_hash($password, PASSWORD_DEFAULT);
     $status_akun = 'Aktif';
     
-    $stmt = mysqli_prepare($koneksi, "INSERT INTO users (nama_lengkap, email, password, id_role_fk, status_akun) VALUES (?, ?, ?, ?, ?)");
+    $stmt = mysqli_prepare($koneksi, "INSERT INTO users (nama_lengkap, email, password, id_role_fk, status_akun, nomor_telepon, alamat, jenis_kelamin, alasan_bergabung) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
     if (!$stmt) {
         header("Location: " . $_SERVER['HTTP_REFERER'] . "?error=database_error");
         exit();
     }
     
-    mysqli_stmt_bind_param($stmt, 'sssis', $nama_lengkap, $email, $password_hash, $id_role_fk, $status_akun);
+    mysqli_stmt_bind_param($stmt, 'sssisssss', $nama_lengkap, $email, $password_hash, $id_role_fk, $status_akun, $nomor_telepon, $alamat, $jenis_kelamin, $alasan_bergabung);
     
     if(mysqli_stmt_execute($stmt)) {
         mysqli_stmt_close($stmt);
@@ -48,7 +52,7 @@ function createUser($nama_lengkap, $email, $password, $id_role_fk) {
     exit();
 }
 
-function updateUser($id_user, $nama_lengkap, $email, $id_role_fk, $password = null) {
+function updateUser($id_user, $nama_lengkap, $email, $id_role_fk, $password = null, $nomor_telepon = null, $alamat = null, $jenis_kelamin = null, $alasan_bergabung = null) {
     global $koneksi;
     
     // Sanitize input
@@ -56,6 +60,10 @@ function updateUser($id_user, $nama_lengkap, $email, $id_role_fk, $password = nu
     $nama_lengkap = mysqli_real_escape_string($koneksi, trim($nama_lengkap));
     $email = mysqli_real_escape_string($koneksi, trim($email));
     $id_role_fk = (int)$id_role_fk;
+    $nomor_telepon = $nomor_telepon ? mysqli_real_escape_string($koneksi, trim($nomor_telepon)) : null;
+    $alamat = $alamat ? mysqli_real_escape_string($koneksi, trim($alamat)) : null;
+    $jenis_kelamin = $jenis_kelamin ? mysqli_real_escape_string($koneksi, trim($jenis_kelamin)) : null;
+    $alasan_bergabung = $alasan_bergabung ? mysqli_real_escape_string($koneksi, trim($alasan_bergabung)) : null;
     
     // Check if email already exists for other users using prepared statement
     $stmt_check = mysqli_prepare($koneksi, "SELECT id_user FROM users WHERE email = ? AND id_user != ?");
@@ -77,19 +85,19 @@ function updateUser($id_user, $nama_lengkap, $email, $id_role_fk, $password = nu
     
     if ($password && !empty($password)) {
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = mysqli_prepare($koneksi, "UPDATE users SET nama_lengkap = ?, email = ?, password = ?, id_role_fk = ? WHERE id_user = ?");
+        $stmt = mysqli_prepare($koneksi, "UPDATE users SET nama_lengkap = ?, email = ?, password = ?, id_role_fk = ?, nomor_telepon = ?, alamat = ?, jenis_kelamin = ?, alasan_bergabung = ? WHERE id_user = ?");
         if (!$stmt) {
             header("Location: " . $_SERVER['HTTP_REFERER'] . "?error=database_error");
             exit();
         }
-        mysqli_stmt_bind_param($stmt, 'sssii', $nama_lengkap, $email, $password_hash, $id_role_fk, $id_user);
+        mysqli_stmt_bind_param($stmt, 'sssissssi', $nama_lengkap, $email, $password_hash, $id_role_fk, $nomor_telepon, $alamat, $jenis_kelamin, $alasan_bergabung, $id_user);
     } else {
-        $stmt = mysqli_prepare($koneksi, "UPDATE users SET nama_lengkap = ?, email = ?, id_role_fk = ? WHERE id_user = ?");
+        $stmt = mysqli_prepare($koneksi, "UPDATE users SET nama_lengkap = ?, email = ?, id_role_fk = ?, nomor_telepon = ?, alamat = ?, jenis_kelamin = ?, alasan_bergabung = ? WHERE id_user = ?");
         if (!$stmt) {
             header("Location: " . $_SERVER['HTTP_REFERER'] . "?error=database_error");
             exit();
         }
-        mysqli_stmt_bind_param($stmt, 'ssii', $nama_lengkap, $email, $id_role_fk, $id_user);
+        mysqli_stmt_bind_param($stmt, 'ssissssi', $nama_lengkap, $email, $id_role_fk, $nomor_telepon, $alamat, $jenis_kelamin, $alasan_bergabung, $id_user);
     }
     
     if(mysqli_stmt_execute($stmt)) {
@@ -102,7 +110,7 @@ function updateUser($id_user, $nama_lengkap, $email, $id_role_fk, $password = nu
     exit();
 }
 
-function updateProfile($id_user, $nama_lengkap, $email, $nomor_telepon = null, $password = null, $konfirmasi_password = null) {
+function updateProfile($id_user, $nama_lengkap, $email, $nomor_telepon = null, $alamat = null, $jenis_kelamin = null, $alasan_bergabung = null, $password = null, $konfirmasi_password = null) {
     global $koneksi;
     
     // Sanitize input data
@@ -110,6 +118,9 @@ function updateProfile($id_user, $nama_lengkap, $email, $nomor_telepon = null, $
     $nama_lengkap = mysqli_real_escape_string($koneksi, trim($nama_lengkap));
     $email = mysqli_real_escape_string($koneksi, trim($email));
     $nomor_telepon = $nomor_telepon ? mysqli_real_escape_string($koneksi, trim($nomor_telepon)) : null;
+    $alamat = $alamat ? mysqli_real_escape_string($koneksi, trim($alamat)) : null;
+    $jenis_kelamin = $jenis_kelamin ? mysqli_real_escape_string($koneksi, trim($jenis_kelamin)) : null;
+    $alasan_bergabung = $alasan_bergabung ? mysqli_real_escape_string($koneksi, trim($alasan_bergabung)) : null;
     
     // Validate password confirmation if password is provided
     if (!empty($password) && $password !== $konfirmasi_password) {
@@ -138,19 +149,19 @@ function updateProfile($id_user, $nama_lengkap, $email, $nomor_telepon = null, $
     // Update user profile
     if ($password && !empty($password)) {
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = mysqli_prepare($koneksi, "UPDATE users SET nama_lengkap = ?, email = ?, nomor_telepon = ?, password = ? WHERE id_user = ?");
+        $stmt = mysqli_prepare($koneksi, "UPDATE users SET nama_lengkap = ?, email = ?, nomor_telepon = ?, alamat = ?, jenis_kelamin = ?, alasan_bergabung = ?, password = ? WHERE id_user = ?");
         if (!$stmt) {
             header("Location: " . $_SERVER['HTTP_REFERER'] . "?error=database_error");
             exit();
         }
-        mysqli_stmt_bind_param($stmt, 'ssssi', $nama_lengkap, $email, $nomor_telepon, $password_hash, $id_user);
+        mysqli_stmt_bind_param($stmt, 'sssssssi', $nama_lengkap, $email, $nomor_telepon, $alamat, $jenis_kelamin, $alasan_bergabung, $password_hash, $id_user);
     } else {
-        $stmt = mysqli_prepare($koneksi, "UPDATE users SET nama_lengkap = ?, email = ?, nomor_telepon = ? WHERE id_user = ?");
+        $stmt = mysqli_prepare($koneksi, "UPDATE users SET nama_lengkap = ?, email = ?, nomor_telepon = ?, alamat = ?, jenis_kelamin = ?, alasan_bergabung = ? WHERE id_user = ?");
         if (!$stmt) {
             header("Location: " . $_SERVER['HTTP_REFERER'] . "?error=database_error");
             exit();
         }
-        mysqli_stmt_bind_param($stmt, 'sssi', $nama_lengkap, $email, $nomor_telepon, $id_user);
+        mysqli_stmt_bind_param($stmt, 'ssssssi', $nama_lengkap, $email, $nomor_telepon, $alamat, $jenis_kelamin, $alasan_bergabung, $id_user);
     }
     
     if(mysqli_stmt_execute($stmt)) {
@@ -231,17 +242,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     switch ($action) {
         case 'create':
-            createUser($_POST['nama_lengkap'], $_POST['email'], $_POST['password'], $_POST['id_role_fk']);
+            createUser(
+                $_POST['nama_lengkap'], 
+                $_POST['email'], 
+                $_POST['password'], 
+                $_POST['id_role_fk'],
+                $_POST['nomor_telepon'] ?? null,
+                $_POST['alamat'] ?? null,
+                $_POST['jenis_kelamin'] ?? null,
+                $_POST['alasan_bergabung'] ?? null
+            );
             break;
         case 'update':
-            updateUser($_POST['id_user'], $_POST['nama_lengkap'], $_POST['email'], $_POST['id_role_fk'], $_POST['password'] ?? null);
+            updateUser(
+                $_POST['id_user'], 
+                $_POST['nama_lengkap'], 
+                $_POST['email'], 
+                $_POST['id_role_fk'], 
+                $_POST['password'] ?? null,
+                $_POST['nomor_telepon'] ?? null,
+                $_POST['alamat'] ?? null,
+                $_POST['jenis_kelamin'] ?? null,
+                $_POST['alasan_bergabung'] ?? null
+            );
             break;
         case 'update_profile':
             updateProfile(
                 $_POST['id_user'], 
                 $_POST['nama_lengkap'], 
                 $_POST['email'], 
-                $_POST['nomor_telepon'] ?? null, 
+                $_POST['nomor_telepon'] ?? null,
+                $_POST['alamat'] ?? null,
+                $_POST['jenis_kelamin'] ?? null,
+                $_POST['alasan_bergabung'] ?? null,
                 $_POST['password'] ?? null, 
                 $_POST['konfirmasi_password'] ?? null
             );

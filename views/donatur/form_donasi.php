@@ -7,6 +7,29 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] != 2) {
     exit();
 }
 
+// Check if user account is pending
+if (isset($_SESSION['status_akun']) && $_SESSION['status_akun'] == 'Pending') {
+    ?>
+    <div class="form-container">
+        <h2>Akses Dibatasi</h2>
+        <div class="alert-warning" style="padding: 20px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px; color: #856404; margin-bottom: 20px;">
+            <strong>Akun Anda Sedang Pending</strong><br>
+            Maaf, Anda belum dapat membuat donasi karena akun Anda masih dalam status pending. 
+            Silakan tunggu hingga admin melakukan verifikasi dan aktivasi terhadap akun Anda.
+            <br><br>
+            <strong>Untuk mempercepat proses verifikasi:</strong>
+            <ul style="margin-top: 10px;">
+                <li>Pastikan data profil Anda sudah lengkap</li>
+                <li>Hubungi admin jika diperlukan</li>
+            </ul>
+        </div>
+        <a href="<?= BASE_URL ?>/donatur/index.php" class="btn">← Kembali ke Dashboard</a>
+    </div>
+    <?php
+    require_once realpath(__DIR__ . '/../templates/footer.php');
+    exit();
+}
+
 $query_kegiatan = "SELECT * FROM kegiatan WHERE status IN ('Akan Datang', 'Sedang Berlangsung') ORDER BY tanggal_mulai ASC";
 $result_kegiatan = mysqli_query($koneksi, $query_kegiatan);
 ?>

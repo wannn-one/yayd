@@ -3,7 +3,7 @@ require_once realpath(__DIR__ . '/../../config/database.php');
 require_once realpath(__DIR__ . '/../templates/header.php');
 
 echo '<script>document.body.setAttribute("data-page", "kelola_pengguna");</script>';
-$query = "SELECT u.id_user, u.nama_lengkap, u.email, r.nama_role, u.status_akun 
+$query = "SELECT u.id_user, u.nama_lengkap, u.email, r.nama_role, u.status_akun, u.alasan_bergabung, u.nomor_telepon, u.alamat, u.jenis_kelamin
           FROM users u
           JOIN roles r ON u.id_role_fk = r.id_role
           ORDER BY u.created_at DESC";
@@ -27,7 +27,12 @@ $result = mysqli_query($koneksi, $query);
                     <th>Nama Lengkap</th>
                     <th>Email</th>
                     <th>Peran</th>
-                    <th>Status Akun</th> <th>Aksi</th>
+                    <th>Status Akun</th>
+                    <th>Alasan Bergabung</th>
+                    <th>Nomor Telepon</th>
+                    <th>Alamat</th>
+                    <th>Jenis Kelamin</th>
+                    <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -40,6 +45,18 @@ $result = mysqli_query($koneksi, $query);
                         <td>
                             <span class="status-chip status-<?= strtolower($user['status_akun']) ?>"><?= htmlspecialchars($user['status_akun']) ?></span>
                         </td>
+                        <td style="max-width: 200px;">
+                            <?php if (!empty($user['alasan_bergabung'])): ?>
+                                <span title="<?= htmlspecialchars($user['alasan_bergabung']) ?>">
+                                    <?= htmlspecialchars(strlen($user['alasan_bergabung']) > 50 ? substr($user['alasan_bergabung'], 0, 50) . '...' : $user['alasan_bergabung']) ?>
+                                </span>
+                            <?php else: ?>
+                                <em class="text-muted">Tidak ada alasan</em>
+                            <?php endif; ?>
+                        </td>
+                        <td><?= htmlspecialchars($user['nomor_telepon']) ?></td>
+                        <td><?= htmlspecialchars($user['alamat']) ?></td>
+                        <td><?= htmlspecialchars($user['jenis_kelamin']) ?></td>
                         <td>
                             <a href="edit_pengguna.php?id=<?= $user['id_user'] ?>" class="btn btn-secondary btn-sm">Edit</a>
                             
@@ -69,7 +86,7 @@ $result = mysqli_query($koneksi, $query);
                     <?php endwhile; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="5" style="text-align: center;">Belum ada pengguna yang terdaftar.</td>
+                        <td colspan="6" style="text-align: center;">Belum ada pengguna yang terdaftar.</td>
                     </tr>
                 <?php endif; ?>
             </tbody>

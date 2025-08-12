@@ -28,6 +28,20 @@ $result_history = mysqli_stmt_get_result($stmt_history);
 ?>
 
 <div class="container dashboard-container">
+    
+    <?php if (isset($_SESSION['status_akun']) && $_SESSION['status_akun'] == 'Pending'): ?>
+    <div class="alert-warning" style="margin-bottom: 20px; padding: 15px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px; color: #856404;">
+        <strong>⚠️ Status Akun: Pending - Akses Dibatasi</strong><br>
+        Akun Anda sedang dalam proses verifikasi oleh admin. <strong>Anda tidak dapat mendaftar kegiatan</strong> hingga admin melakukan aktivasi terhadap akun Anda.
+        <br><br>
+        <strong>Untuk mempercepat verifikasi:</strong>
+        <ul style="margin: 10px 0 0 20px;">
+            <li>Pastikan data profil Anda sudah lengkap</li>
+            <li>Tunggu maksimal 2x24 jam untuk aktivasi</li>
+        </ul>
+    </div>
+    <?php endif; ?>
+    
     <section class="dashboard-section">
         <h1>Kegiatan & Acara</h1>
 

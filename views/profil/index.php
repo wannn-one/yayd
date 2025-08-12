@@ -49,6 +49,22 @@ $user = mysqli_fetch_assoc($result);
                 <label>Nomor Telepon</label>
                 <input type="text" name="nomor_telepon" value="<?= htmlspecialchars($user['nomor_telepon']) ?>">
             </div>
+            <div class="form-group">
+                <label>Alamat</label>
+                <textarea name="alamat" rows="3" placeholder="Alamat lengkap"><?= htmlspecialchars($user['alamat']) ?></textarea>
+            </div>
+            <div class="form-group">
+                <label>Jenis Kelamin</label>
+                <select name="jenis_kelamin">
+                    <option value="">-- Pilih Jenis Kelamin --</option>
+                    <option value="Laki-laki" <?= ($user['jenis_kelamin'] == 'Laki-laki') ? 'selected' : '' ?>>Laki-laki</option>
+                    <option value="Perempuan" <?= ($user['jenis_kelamin'] == 'Perempuan') ? 'selected' : '' ?>>Perempuan</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Alasan Bergabung</label>
+                <textarea name="alasan_bergabung" rows="3" placeholder="Ceritakan alasan Anda bergabung dengan YAYD"><?= htmlspecialchars($user['alasan_bergabung']) ?></textarea>
+            </div>
             <hr style="margin: 20px 0;">
             <div class="form-group">
                 <label>Password Baru (Kosongkan jika tidak ingin diubah)</label>
